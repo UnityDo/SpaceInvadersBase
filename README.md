@@ -1,3 +1,6 @@
 # SpaceInvaders
 
-Carpeta creada como copia base para seguir desarrollando el juego. Aquí se copiarán solo los archivos y dependencias necesarios para compilar y ejecutar SpaceInvaders.exe, evitando duplicados innecesarios.
+## 🚀 Space Invaders Base
+
+Esta es la base del juego Space Invaders, un clásico de los videojuegos. Aquí encontrarás la estructura básica del proyecto, incluyendo los archivos fuente, recursos y dependencias necesarias para compilar y ejecutar el juego.
+
