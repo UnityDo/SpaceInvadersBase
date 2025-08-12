@@ -1,15 +1,23 @@
+
 #include "EnemyManager.h"
+#include "EnemyFactory.h"
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 EnemyManager::EnemyManager() {
-    // Crear enemigos en filas y columnas
-    for (int y = 0; y < 5; ++y)
-        for (int x = 0; x < 10; ++x)
-            enemies.emplace_back(60 + x * 60, 50 + y * 40);
-    
-    // Inicializar seed para disparos aleatorios
+    LoadLevel(0); // Cargar nivel 1 por defecto
+    std::cout << "[EnemyManager] Enemigos tras LoadLevel: " << enemies.size() << std::endl;
+    if (!enemies.empty()) {
+        int vivos = 0;
+        for (const auto& e : enemies) if (e.alive) vivos++;
+        std::cout << "[EnemyManager] Enemigos vivos al inicio: " << vivos << std::endl;
+    }
     srand((unsigned)time(nullptr));
+}
+
+void EnemyManager::LoadLevel(int levelIndex) {
+    enemies = EnemyFactory::CreateEnemiesFromLevels("Data/levels.json", levelIndex);
 }
 
 void EnemyManager::Update(float dt) {

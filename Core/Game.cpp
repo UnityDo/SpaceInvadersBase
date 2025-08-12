@@ -179,14 +179,9 @@ void Game::Run() {
                 SDL_RenderFillRect(rend, &bullet.rect);
             }
             
-            // Dibujar enemigos como cuadrados
+            // Dibujar enemigos usando su método Render (color propio)
             for (auto& e : enemyManager->enemies) {
-                if (e.alive) {
-                    SDL_SetRenderDrawColor(rend, 255,0,0,255);
-                    SDL_FRect r = e.rect;
-                    SDL_FRect rect = {r.x, r.y, r.w, r.h};
-                    SDL_RenderFillRect(rend, &rect);
-                }
+                e.Render(rend);
             }
             
             // Dibujar partículas

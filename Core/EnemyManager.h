@@ -10,6 +10,7 @@ public:
     void Render(SDL_Renderer* renderer);
     void FireRandomBullet(std::vector<Bullet>& enemyBullets);
     std::vector<Enemy> enemies;
+    void LoadLevel(int levelIndex = 0);
 private:
     float direction = 1.0f; // 1 = derecha, -1 = izquierda
     float speed = 150.0f;   // Aumentado de 50 a 150

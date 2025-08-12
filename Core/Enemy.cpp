@@ -1,6 +1,9 @@
 #include "Enemy.h"
 
-Enemy::Enemy(float x, float y) {
+
+Enemy::Enemy(float x, float y, int hp, EnemyColor color_)
+    : health(hp), color(color_)
+{
     rect = { x, y, 40, 20 };
 }
 
@@ -10,7 +13,8 @@ void Enemy::Update(float dt) {
 
 void Enemy::Render(SDL_Renderer* renderer) {
     if (alive) {
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        // Refuerzo: asegurar que el color es el correcto
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRect(renderer, &rect);
     }
 }

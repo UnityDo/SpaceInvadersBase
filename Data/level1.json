@@ -1,0 +1,8 @@
+{
+  "enemies": [
+    { "type": "basic", "x": 100, "y": 50, "hp": 2 },
+    { "type": "basic", "x": 200, "y": 50, "hp": 2 },
+    { "type": "fast",  "x": 150, "y": 80, "hp": 1 },
+    { "type": "tank",  "x": 250, "y": 100, "hp": 5 }
+  ]
+}

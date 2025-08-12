@@ -27,9 +27,9 @@ echo #define BUILD_DATE "%DATE%" >> %BUILD_INFO%
 echo #define BUILD_AUTHOR "%AUTHOR%" >> %BUILD_INFO%
 
 REM === COMPILAR ===
-set SRC=Core\main.cpp Core\Game.cpp Core\Player.cpp Core\Enemy.cpp Core\EnemyManager.cpp Core\Bullet.cpp Core\Renderer.cpp Core\InputManager.cpp Core\CollisionManager.cpp Core\ParticleSystem.cpp Core\TextRenderer.cpp Core\AudioManager.cpp Core\AudioManagerMiniaudio.cpp
+set SRC=Core\main.cpp Core\Game.cpp Core\Player.cpp Core\Enemy.cpp Core\EnemyManager.cpp Core\EnemyFactory.cpp Core\Bullet.cpp Core\Renderer.cpp Core\InputManager.cpp Core\CollisionManager.cpp Core\ParticleSystem.cpp Core\TextRenderer.cpp Core\AudioManager.cpp Core\AudioManagerMiniaudio.cpp
 set OUT=SpaceInvaders.exe
-set INCLUDES=-ICore -Ifonts -Ilibs\SDL3-3.2.18 -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include
+set INCLUDES=-ICore -Ifonts -Ilibs\SDL3-3.2.18 -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann
 set LIBS=-Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include\SDL3 -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Llibs\SDL3-3.2.18\x86_64-w64-mingw32\lib -Llibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\lib -lSDL3 -lSDL3_ttf 
 
 

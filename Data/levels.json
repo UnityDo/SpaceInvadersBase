@@ -1,0 +1,76 @@
+{
+  "levels": [
+    {
+      "name": "Nivel 1",
+    "enemies": [
+    
+    { "type": "basic", "x": 250, "y": 50,  "hp": 2 },
+    { "type": "basic", "x": 290, "y": 50,  "hp": 2 },
+    { "type": "fast",  "x": 330, "y": 50,  "hp": 1 },
+    
+    
+    { "type": "tank",  "x": 220, "y": 80,  "hp": 5 },
+    { "type": "basic", "x": 360, "y": 80,  "hp": 2 },
+    
+    
+    { "type": "basic", "x": 200, "y": 110, "hp": 2 },
+    { "type": "fast",  "x": 380, "y": 110, "hp": 1 },
+    
+
+    { "type": "fast",  "x": 190, "y": 140, "hp": 1 },
+    { "type": "basic", "x": 250, "y": 140, "hp": 2 },
+    { "type": "basic", "x": 290, "y": 140, "hp": 2 },
+    { "type": "basic", "x": 390, "y": 140, "hp": 2 },
+    
+
+    { "type": "basic", "x": 200, "y": 170, "hp": 2 },
+    { "type": "tank",  "x": 270, "y": 170, "hp": 5 },
+    { "type": "fast",  "x": 400, "y": 170, "hp": 1 },
+    
+    
+    { "type": "basic", "x": 220, "y": 200, "hp": 2 },
+    { "type": "basic", "x": 280, "y": 200, "hp": 2 },
+    { "type": "basic", "x": 320, "y": 200, "hp": 2 },
+    { "type": "basic", "x": 410, "y": 200, "hp": 2 },
+    
+   
+    { "type": "fast",  "x": 200, "y": 230, "hp": 1 },
+    { "type": "tank",  "x": 300, "y": 230, "hp": 5 },
+    { "type": "fast",  "x": 350, "y": 230, "hp": 1 },
+    { "type": "basic", "x": 420, "y": 230, "hp": 2 },
+    
+    
+    { "type": "basic", "x": 190, "y": 260, "hp": 2 },
+    { "type": "basic", "x": 250, "y": 260, "hp": 2 },
+    { "type": "basic", "x": 370, "y": 260, "hp": 2 },
+    { "type": "tank",  "x": 430, "y": 260, "hp": 5 },
+    
+  
+    { "type": "fast",  "x": 200, "y": 290, "hp": 1 },
+    { "type": "basic", "x": 270, "y": 290, "hp": 2 },
+    { "type": "fast",  "x": 350, "y": 290, "hp": 1 },
+    { "type": "basic", "x": 440, "y": 290, "hp": 2 },
+    
+  
+    { "type": "basic", "x": 220, "y": 320, "hp": 2 },
+    { "type": "tank",  "x": 290, "y": 320, "hp": 5 },
+    { "type": "basic", "x": 330, "y": 320, "hp": 2 },
+    { "type": "fast",  "x": 450, "y": 320, "hp": 1 },
+    
+    
+    { "type": "basic", "x": 250, "y": 350, "hp": 2 },
+    { "type": "basic", "x": 310, "y": 350, "hp": 2 },
+    { "type": "basic", "x": 460, "y": 350, "hp": 2 }
+  ]
+    },
+    {
+      "name": "Nivel 2",
+      "enemies": [
+        { "type": "basic", "x": 120, "y": 60, "hp": 2 },
+        { "type": "fast",  "x": 180, "y": 90, "hp": 1 },
+        { "type": "tank",  "x": 220, "y": 110, "hp": 6 },
+        { "type": "basic", "x": 300, "y": 70, "hp": 2 }
+      ]
+    }
+  ]
+}
