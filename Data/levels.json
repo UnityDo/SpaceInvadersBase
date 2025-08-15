@@ -2,74 +2,263 @@
   "levels": [
     {
       "name": "Nivel 1",
-    "enemies": [
-    
-    { "type": "basic", "x": 250, "y": 50,  "hp": 2 },
-    { "type": "basic", "x": 290, "y": 50,  "hp": 2 },
-    { "type": "fast",  "x": 330, "y": 50,  "hp": 1 },
-    
-    
-    { "type": "tank",  "x": 220, "y": 80,  "hp": 5 },
-    { "type": "basic", "x": 360, "y": 80,  "hp": 2 },
-    
-    
-    { "type": "basic", "x": 200, "y": 110, "hp": 2 },
-    { "type": "fast",  "x": 380, "y": 110, "hp": 1 },
-    
-
-    { "type": "fast",  "x": 190, "y": 140, "hp": 1 },
-    { "type": "basic", "x": 250, "y": 140, "hp": 2 },
-    { "type": "basic", "x": 290, "y": 140, "hp": 2 },
-    { "type": "basic", "x": 390, "y": 140, "hp": 2 },
-    
-
-    { "type": "basic", "x": 200, "y": 170, "hp": 2 },
-    { "type": "tank",  "x": 270, "y": 170, "hp": 5 },
-    { "type": "fast",  "x": 400, "y": 170, "hp": 1 },
-    
-    
-    { "type": "basic", "x": 220, "y": 200, "hp": 2 },
-    { "type": "basic", "x": 280, "y": 200, "hp": 2 },
-    { "type": "basic", "x": 320, "y": 200, "hp": 2 },
-    { "type": "basic", "x": 410, "y": 200, "hp": 2 },
-    
-   
-    { "type": "fast",  "x": 200, "y": 230, "hp": 1 },
-    { "type": "tank",  "x": 300, "y": 230, "hp": 5 },
-    { "type": "fast",  "x": 350, "y": 230, "hp": 1 },
-    { "type": "basic", "x": 420, "y": 230, "hp": 2 },
-    
-    
-    { "type": "basic", "x": 190, "y": 260, "hp": 2 },
-    { "type": "basic", "x": 250, "y": 260, "hp": 2 },
-    { "type": "basic", "x": 370, "y": 260, "hp": 2 },
-    { "type": "tank",  "x": 430, "y": 260, "hp": 5 },
-    
-  
-    { "type": "fast",  "x": 200, "y": 290, "hp": 1 },
-    { "type": "basic", "x": 270, "y": 290, "hp": 2 },
-    { "type": "fast",  "x": 350, "y": 290, "hp": 1 },
-    { "type": "basic", "x": 440, "y": 290, "hp": 2 },
-    
-  
-    { "type": "basic", "x": 220, "y": 320, "hp": 2 },
-    { "type": "tank",  "x": 290, "y": 320, "hp": 5 },
-    { "type": "basic", "x": 330, "y": 320, "hp": 2 },
-    { "type": "fast",  "x": 450, "y": 320, "hp": 1 },
-    
-    
-    { "type": "basic", "x": 250, "y": 350, "hp": 2 },
-    { "type": "basic", "x": 310, "y": 350, "hp": 2 },
-    { "type": "basic", "x": 460, "y": 350, "hp": 2 }
-  ]
+      "enemies": [
+        { "type": "basic",   "x": 120, "y": 60, "hp": 2, "pattern": "straight", "speed": 1, "damage": 1, "wave": 1 },
+        { "type": "basic",   "x": 220, "y": 60, "hp": 2, "pattern": "zigzag",   "speed": 1.2, "damage": 1, "wave": 1 },
+        { "type": "basic",   "x": 320, "y": 60, "hp": 2, "pattern": "diagonal", "speed": 1.1, "damage": 1, "wave": 1 },
+        { "type": "basic",   "x": 420, "y": 60, "hp": 2, "pattern": "zigzag",   "speed": 1.2, "damage": 1, "wave": 1 },
+        { "type": "basic",   "x": 520, "y": 60, "hp": 2, "pattern": "straight", "speed": 1, "damage": 1, "wave": 1 }
+      ]
     },
     {
       "name": "Nivel 2",
       "enemies": [
-        { "type": "basic", "x": 120, "y": 60, "hp": 2 },
-        { "type": "fast",  "x": 180, "y": 90, "hp": 1 },
-        { "type": "tank",  "x": 220, "y": 110, "hp": 6 },
-        { "type": "basic", "x": 300, "y": 70, "hp": 2 }
+        { "type": "fast",  "x": 140, "y": 60, "hp": 1, "pattern": "zigzag",  "speed": 3, "wave": 1 },
+        { "type": "fast",  "x": 240, "y": 80, "hp": 1, "pattern": "zigzag",  "speed": 3, "wave": 1 },
+        { "type": "basic", "x": 340, "y": 100,"hp": 2, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "fast",  "x": 440, "y": 80, "hp": 1, "pattern": "zigzag",  "speed": 3, "wave": 1 },
+        { "type": "fast",  "x": 540, "y": 60, "hp": 1, "pattern": "zigzag",  "speed": 3, "wave": 1 }
+      ]
+    },
+    {
+      "name": "Nivel 3",
+      "enemies": [
+        { "type": "basic", "x": 120, "y": 60,  "hp": 2, "pattern": "diagonal", "speed": 2, "wave": 1 },
+        { "type": "fast",  "x": 220, "y": 80,  "hp": 1, "pattern": "diagonal", "speed": 4, "wave": 2 },
+        { "type": "basic", "x": 320, "y": 100, "hp": 2, "pattern": "diagonal", "speed": 2, "wave": 1 },
+        { "type": "fast",  "x": 420, "y": 80,  "hp": 1, "pattern": "diagonal", "speed": 4, "wave": 2 },
+        { "type": "basic", "x": 520, "y": 60,  "hp": 2, "pattern": "diagonal", "speed": 2, "wave": 1 }
+      ]
+    },
+    {
+      "name": "Nivel 4",
+      "enemies": [
+        { "type": "tank",  "x": 160, "y": 60,  "hp": 5, "pattern": "descend-stop-shoot", "speed": 1, "wave": 1 },
+        { "type": "basic", "x": 260, "y": 80,  "hp": 2, "pattern": "straight",           "speed": 2, "wave": 1 },
+        { "type": "sniper","x": 360, "y": 110, "hp": 3, "pattern": "straight",           "speed": 1, "wave": 1 },
+        { "type": "basic", "x": 460, "y": 80,  "hp": 2, "pattern": "straight",           "speed": 2, "wave": 1 },
+        { "type": "tank",  "x": 560, "y": 60,  "hp": 5, "pattern": "descend-stop-shoot", "speed": 1, "wave": 1 }
+      ]
+    },
+    {
+      "name": "Nivel 5",
+      "enemies": [
+        { "type": "boss",  "x": 340, "y": 60,  "hp": 22, "pattern": "circle", "speed": 2, "wave": 1 },
+        { "type": "fast",  "x": 240, "y": 130, "hp": 1,  "pattern": "zigzag", "speed": 4, "wave": 2 },
+        { "type": "fast",  "x": 440, "y": 130, "hp": 1,  "pattern": "zigzag", "speed": 4, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 6",
+      "enemies": [
+        { "type": "splitter","x": 120, "y": 70,  "hp": 3, "pattern": "straight", "speed": 2, "wave": 1 },
+        { "type": "tank",    "x": 220, "y": 60,  "hp": 5, "pattern": "zigzag",   "speed": 2, "wave": 1 },
+        { "type": "fast",    "x": 320, "y": 90,  "hp": 1, "pattern": "zigzag",   "speed": 4, "wave": 2 },
+        { "type": "tank",    "x": 420, "y": 60,  "hp": 5, "pattern": "zigzag",   "speed": 2, "wave": 1 },
+        { "type": "splitter","x": 520, "y": 70,  "hp": 3, "pattern": "straight", "speed": 2, "wave": 1 }
+      ]
+    },
+    {
+      "name": "Nivel 7",
+      "enemies": [
+        { "type": "fast",   "x": 140, "y": 60,  "hp": 1, "pattern": "zigzag", "speed": 4, "wave": 1 },
+        { "type": "fast",   "x": 240, "y": 80,  "hp": 1, "pattern": "zigzag", "speed": 4, "wave": 1 },
+        { "type": "tank",   "x": 340, "y": 100, "hp": 6, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "fast",   "x": 440, "y": 80,  "hp": 1, "pattern": "zigzag", "speed": 4, "wave": 1 },
+        { "type": "fast",   "x": 540, "y": 60,  "hp": 1, "pattern": "zigzag", "speed": 4, "wave": 1 },
+        { "type": "basic",  "x": 340, "y": 140, "hp": 2, "pattern": "straight","speed": 2, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 8",
+      "enemies": [
+        { "type": "sniper", "x": 200, "y": 120, "hp": 3, "pattern": "straight", "speed": 1, "wave": 1 },
+        { "type": "tank",   "x": 280, "y": 80,  "hp": 6, "pattern": "descend-stop-shoot", "speed": 1, "wave": 1 },
+        { "type": "tank",   "x": 400, "y": 80,  "hp": 6, "pattern": "descend-stop-shoot", "speed": 1, "wave": 1 },
+        { "type": "sniper", "x": 480, "y": 120, "hp": 3, "pattern": "straight", "speed": 1, "wave": 1 },
+        { "type": "fast",   "x": 340, "y": 140, "hp": 1, "pattern": "zigzag",   "speed": 5, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 9",
+      "enemies": [
+        { "type": "basic",  "x": 120, "y": 60,  "hp": 2, "pattern": "straight", "speed": 3, "wave": 1 },
+        { "type": "fast",   "x": 220, "y": 60,  "hp": 1, "pattern": "diagonal", "speed": 5, "wave": 1 },
+        { "type": "tank",   "x": 320, "y": 70,  "hp": 6, "pattern": "straight", "speed": 2, "wave": 1 },
+        { "type": "fast",   "x": 420, "y": 60,  "hp": 1, "pattern": "diagonal", "speed": 5, "wave": 1 },
+        { "type": "basic",  "x": 520, "y": 60,  "hp": 2, "pattern": "straight", "speed": 3, "wave": 1 },
+        { "type": "splitter","x": 320,"y": 120, "hp": 3, "pattern": "straight", "speed": 2, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 10",
+      "enemies": [
+        { "type": "boss",   "x": 340, "y": 60,  "hp": 35, "pattern": "circle", "speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 260, "y": 110, "hp": 7,  "pattern": "straight","speed": 2, "wave": 2 },
+        { "type": "tank",   "x": 420, "y": 110, "hp": 7,  "pattern": "straight","speed": 2, "wave": 2 },
+        { "type": "sniper", "x": 340, "y": 140, "hp": 4,  "pattern": "straight","speed": 1, "wave": 3 }
+      ]
+    },
+    {
+      "name": "Nivel 11",
+      "enemies": [
+        { "type": "fast",   "x": 120, "y": 60,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 200, "y": 80,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 280, "y": 100, "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 360, "y": 120, "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 440, "y": 100, "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 520, "y": 80,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "tank",   "x": 340, "y": 60,  "hp": 7, "pattern": "straight","speed": 2, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 12",
+      "enemies": [
+        { "type": "basic",  "x": 180, "y": 70,  "hp": 3, "pattern": "circle",  "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 300, "y": 70,  "hp": 3, "pattern": "circle",  "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 420, "y": 70,  "hp": 3, "pattern": "circle",  "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 540, "y": 70,  "hp": 3, "pattern": "circle",  "speed": 2, "wave": 1 },
+        { "type": "sniper", "x": 340, "y": 130, "hp": 4, "pattern": "straight","speed": 1, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 13",
+      "enemies": [
+        { "type": "splitter","x": 160, "y": 70,  "hp": 3, "pattern": "straight","speed": 3, "wave": 1 },
+        { "type": "splitter","x": 240, "y": 70,  "hp": 3, "pattern": "straight","speed": 3, "wave": 1 },
+        { "type": "tank",    "x": 340, "y": 80,  "hp": 8, "pattern": "descend-stop-shoot","speed": 2, "wave": 1 },
+        { "type": "splitter","x": 440, "y": 70,  "hp": 3, "pattern": "straight","speed": 3, "wave": 1 },
+        { "type": "splitter","x": 520, "y": 70,  "hp": 3, "pattern": "straight","speed": 3, "wave": 1 }
+      ]
+    },
+    {
+      "name": "Nivel 14",
+      "enemies": [
+        { "type": "fast",   "x": 120, "y": 60,  "hp": 1, "pattern": "diagonal", "speed": 5, "wave": 1 },
+        { "type": "basic",  "x": 220, "y": 80,  "hp": 3, "pattern": "straight", "speed": 3, "wave": 1 },
+        { "type": "tank",   "x": 340, "y": 60,  "hp": 8, "pattern": "straight", "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 460, "y": 80,  "hp": 3, "pattern": "straight", "speed": 3, "wave": 1 },
+        { "type": "fast",   "x": 560, "y": 60,  "hp": 1, "pattern": "diagonal", "speed": 5, "wave": 1 },
+        { "type": "sniper", "x": 340, "y": 130, "hp": 4, "pattern": "straight", "speed": 1, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 15",
+      "enemies": [
+        { "type": "boss",    "x": 340, "y": 60,  "hp": 48, "pattern": "circle", "speed": 3, "wave": 1 },
+        { "type": "fast",    "x": 240, "y": 120, "hp": 1,  "pattern": "zigzag", "speed": 5, "wave": 2 },
+        { "type": "fast",    "x": 440, "y": 120, "hp": 1,  "pattern": "zigzag", "speed": 5, "wave": 2 },
+        { "type": "sniper",  "x": 340, "y": 150, "hp": 5,  "pattern": "straight","speed": 1, "wave": 3 }
+      ]
+    },
+    {
+      "name": "Nivel 16",
+      "enemies": [
+        { "type": "basic",  "x": 120, "y": 60,  "hp": 3, "pattern": "descend-stop-shoot", "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 220, "y": 80,  "hp": 3, "pattern": "descend-stop-shoot", "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 320, "y": 100, "hp": 3, "pattern": "descend-stop-shoot", "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 420, "y": 80,  "hp": 3, "pattern": "descend-stop-shoot", "speed": 2, "wave": 1 },
+        { "type": "basic",  "x": 520, "y": 60,  "hp": 3, "pattern": "descend-stop-shoot", "speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 340, "y": 60,  "hp": 9, "pattern": "straight",           "speed": 2, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 17",
+      "enemies": [
+        { "type": "fast",   "x": 140, "y": 60,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 240, "y": 70,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 340, "y": 80,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 440, "y": 70,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "fast",   "x": 540, "y": 60,  "hp": 1, "pattern": "zigzag", "speed": 5, "wave": 1 },
+        { "type": "sniper", "x": 340, "y": 130, "hp": 5, "pattern": "straight","speed": 1, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 18",
+      "enemies": [
+        { "type": "tank",   "x": 200, "y": 70,  "hp": 9, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 300, "y": 70,  "hp": 9, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 380, "y": 70,  "hp": 9, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 480, "y": 70,  "hp": 9, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "sniper", "x": 260, "y": 120, "hp": 5, "pattern": "straight","speed": 1, "wave": 2 },
+        { "type": "sniper", "x": 440, "y": 120, "hp": 5, "pattern": "straight","speed": 1, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 19",
+      "enemies": [
+        { "type": "splitter","x": 140, "y": 70,  "hp": 4, "pattern": "straight","speed": 3, "wave": 1 },
+        { "type": "basic",   "x": 240, "y": 80,  "hp": 3, "pattern": "diagonal","speed": 3, "wave": 1 },
+        { "type": "tank",    "x": 340, "y": 60,  "hp":10, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "basic",   "x": 440, "y": 80,  "hp": 3, "pattern": "diagonal","speed": 3, "wave": 1 },
+        { "type": "splitter","x": 540, "y": 70,  "hp": 4, "pattern": "straight","speed": 3, "wave": 1 },
+        { "type": "fast",    "x": 340, "y": 130, "hp": 1, "pattern": "zigzag",  "speed": 5, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 20",
+      "enemies": [
+        { "type": "boss",   "x": 340, "y": 60,  "hp": 65, "pattern": "circle", "speed": 3, "wave": 1 },
+        { "type": "tank",   "x": 260, "y": 110, "hp": 10, "pattern": "straight","speed": 2, "wave": 2 },
+        { "type": "tank",   "x": 420, "y": 110, "hp": 10, "pattern": "straight","speed": 2, "wave": 2 },
+        { "type": "fast",   "x": 200, "y": 140, "hp": 1,  "pattern": "zigzag", "speed": 5, "wave": 3 },
+        { "type": "fast",   "x": 480, "y": 140, "hp": 1,  "pattern": "zigzag", "speed": 5, "wave": 3 }
+      ]
+    },
+    {
+      "name": "Nivel 21",
+      "enemies": [
+        { "type": "basic",  "x": 120, "y": 60,  "hp": 4, "pattern": "diagonal", "speed": 4, "wave": 1 },
+        { "type": "fast",   "x": 220, "y": 70,  "hp": 1, "pattern": "zigzag",   "speed": 5, "wave": 1 },
+        { "type": "sniper", "x": 320, "y": 110, "hp": 6, "pattern": "straight", "speed": 1, "wave": 2 },
+        { "type": "fast",   "x": 420, "y": 70,  "hp": 1, "pattern": "zigzag",   "speed": 5, "wave": 1 },
+        { "type": "basic",  "x": 520, "y": 60,  "hp": 4, "pattern": "diagonal", "speed": 4, "wave": 1 },
+        { "type": "splitter","x": 320,"y": 140, "hp": 4, "pattern": "straight", "speed": 3, "wave": 3 }
+      ]
+    },
+    {
+      "name": "Nivel 22",
+      "enemies": [
+        { "type": "tank",   "x": 180, "y": 70,  "hp": 11, "pattern": "descend-stop-shoot","speed": 2, "wave": 1 },
+        { "type": "fast",   "x": 260, "y": 90,  "hp": 1,  "pattern": "zigzag",           "speed": 5, "wave": 1 },
+        { "type": "tank",   "x": 340, "y": 70,  "hp": 11, "pattern": "descend-stop-shoot","speed": 2, "wave": 1 },
+        { "type": "fast",   "x": 420, "y": 90,  "hp": 1,  "pattern": "zigzag",           "speed": 5, "wave": 1 },
+        { "type": "tank",   "x": 500, "y": 70,  "hp": 11, "pattern": "descend-stop-shoot","speed": 2, "wave": 1 },
+        { "type": "sniper", "x": 340, "y": 130, "hp": 6,  "pattern": "straight",          "speed": 1, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 23",
+      "enemies": [
+        { "type": "sniper",  "x": 160, "y": 120, "hp": 6, "pattern": "straight","speed": 1, "wave": 1 },
+        { "type": "basic",   "x": 240, "y": 80,  "hp": 5, "pattern": "diagonal","speed": 4, "wave": 1 },
+        { "type": "fast",    "x": 340, "y": 60,  "hp": 1, "pattern": "zigzag",  "speed": 5, "wave": 1 },
+        { "type": "basic",   "x": 440, "y": 80,  "hp": 5, "pattern": "diagonal","speed": 4, "wave": 1 },
+        { "type": "sniper",  "x": 520, "y": 120, "hp": 6, "pattern": "straight","speed": 1, "wave": 1 },
+        { "type": "splitter","x": 340, "y": 140, "hp": 5, "pattern": "straight","speed": 3, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 24",
+      "enemies": [
+        { "type": "tank",   "x": 140, "y": 70,  "hp": 12, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 240, "y": 70,  "hp": 12, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 340, "y": 70,  "hp": 12, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 440, "y": 70,  "hp": 12, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "tank",   "x": 540, "y": 70,  "hp": 12, "pattern": "straight","speed": 2, "wave": 1 },
+        { "type": "sniper", "x": 340, "y": 130, "hp": 7,  "pattern": "straight","speed": 1, "wave": 2 }
+      ]
+    },
+    {
+      "name": "Nivel 25",
+      "enemies": [
+        { "type": "boss",    "x": 340, "y": 60,  "hp": 100, "pattern": "circle", "speed": 4, "wave": 1 },
+        { "type": "tank",    "x": 260, "y": 110, "hp": 12,  "pattern": "straight","speed": 2, "wave": 2 },
+        { "type": "tank",    "x": 420, "y": 110, "hp": 12,  "pattern": "straight","speed": 2, "wave": 2 },
+        { "type": "sniper",  "x": 200, "y": 140, "hp": 7,   "pattern": "straight","speed": 1, "wave": 3 },
+        { "type": "sniper",  "x": 480, "y": 140, "hp": 7,   "pattern": "straight","speed": 1, "wave": 3 },
+        { "type": "fast",    "x": 320, "y": 150, "hp": 1,   "pattern": "zigzag", "speed": 5, "wave": 4 },
+        { "type": "fast",    "x": 360, "y": 150, "hp": 1,   "pattern": "zigzag", "speed": 5, "wave": 4 }
       ]
     }
   ]

@@ -30,15 +30,35 @@ std::vector<Enemy> EnemyFactory::CreateEnemiesFromLevels(const std::string& json
     }
     int count = 0;
     for (const auto& enemyData : level["enemies"]) {
-        std::string type = enemyData.value("type", "basic");
+        std::string typeStr = enemyData.value("type", "basic");
         float x = enemyData.value("x", 0.0f);
         float y = enemyData.value("y", 0.0f);
         int hp = enemyData.value("hp", 1);
-        EnemyColor color(255,0,0,255); // default rojo
-        if (type == "fast") color = EnemyColor(0,0,255,255); // azul
-        else if (type == "tank") color = EnemyColor(0,255,0,255); // verde
-        Enemy enemy(x, y, hp, color);
-        enemy.color = color; // refuerzo explícito
+        float speed = enemyData.value("speed", 1.0f);
+        int damage = enemyData.value("damage", 1);
+        std::string patternStr = enemyData.value("pattern", "straight");
+
+        EnemyType type = EnemyType::Basic;
+        EnemyColor color(255,0,0,255);
+        MovePattern pattern = MovePattern::Straight;
+
+        if (typeStr == "basic") { type = EnemyType::Basic; color = EnemyColor(255,0,0,255); }
+        else if (typeStr == "fast") { type = EnemyType::Fast; color = EnemyColor(0,0,255,255); }
+        else if (typeStr == "tank") { type = EnemyType::Tank; color = EnemyColor(0,255,0,255); }
+        else if (typeStr == "boss") { type = EnemyType::Boss; color = EnemyColor(255,255,0,255); }
+        else if (typeStr == "sniper") { type = EnemyType::Sniper; color = EnemyColor(255,0,255,255); }
+        else if (typeStr == "splitter") { type = EnemyType::Splitter; color = EnemyColor(255,128,0,255); }
+
+        if (patternStr == "straight") pattern = MovePattern::Straight;
+        else if (patternStr == "zigzag") pattern = MovePattern::ZigZag;
+        else if (patternStr == "diagonal") pattern = MovePattern::Diagonal;
+        else if (patternStr == "dive") pattern = MovePattern::Dive;
+        else if (patternStr == "descend-stop-shoot") pattern = MovePattern::DescendStopShoot;
+        else if (patternStr == "circle") pattern = MovePattern::Circle;
+        else if (patternStr == "stationary") pattern = MovePattern::Stationary;
+        else if (patternStr == "scatter") pattern = MovePattern::Scatter;
+
+        Enemy enemy(x, y, hp, color, type, speed, damage, pattern);
         enemies.push_back(enemy);
         count++;
     }

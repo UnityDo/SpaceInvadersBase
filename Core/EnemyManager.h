@@ -2,6 +2,7 @@
 #include <vector>
 #include "Enemy.h"
 #include "Bullet.h"
+#include "DefenseBlock.h"
 
 class EnemyManager {
 public:
@@ -10,6 +11,7 @@ public:
     void Render(SDL_Renderer* renderer);
     void FireRandomBullet(std::vector<Bullet>& enemyBullets);
     std::vector<Enemy> enemies;
+    std::vector<DefenseBlock> defenseBlocks;
     void LoadLevel(int levelIndex = 0);
 private:
     float direction = 1.0f; // 1 = derecha, -1 = izquierda

@@ -9,5 +9,7 @@ public:
     bool IsRightPressed() const;
     bool IsFirePressed() const;
 private:
-    bool left, right, fire;
+    bool left = false;
+    bool right = false;
+    bool fire = false;
 };
