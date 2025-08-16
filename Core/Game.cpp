@@ -10,6 +10,11 @@
 #include "../libs/nlohmann/json.hpp"
 using json = nlohmann::json;
 
+// Evitar conflicto con macro max de Windows
+#ifdef max
+#undef max
+#endif
+
 #include "AudioManagerMiniaudio.h"
 
 // Evitar conflicto con macro DrawText de Windows
@@ -18,6 +23,8 @@ using json = nlohmann::json;
 #endif
 
 bool g_running = true;
+
+int Game::GetCurrentLevel() const { return currentLevel; }
 
 Game::Game() : running(false), player(nullptr), enemyManager(nullptr), renderer(nullptr), inputManager(nullptr), collisionManager(nullptr), particleSystem(nullptr), textRenderer(nullptr), audioManager(nullptr), score(0), lives(3), gameOver(false), gameWon(false), enemyShootTimer(0.0f) {}
 
@@ -58,6 +65,9 @@ bool Game::Init() {
         std::cout << "Warning: No se pudo inicializar TextRenderer" << std::endl;
     }
     
+    // Desactivar modo test de powerups por defecto (no sueltan todos los enemigos)
+    SetPowerupTestMode(false);
+
     running = true;
     g_running = true;
     return true;
@@ -65,10 +75,14 @@ bool Game::Init() {
 
 // Dibuja un círculo relleno en SDL
 void DrawCircle(SDL_Renderer* rend, int cx, int cy, int radius, SDL_Color color) {
+    // Guardar blend mode actual si es posible
+    // SDL_BlendMode no tiene getter en SDL2/3, así que asumimos que el renderer ya
+    // tiene blending activado (se estableció en Renderer::Init)
     SDL_SetRenderDrawColor(rend, color.r, color.g, color.b, color.a);
     for (int w = -radius; w <= radius; w++) {
         for (int h = -radius; h <= radius; h++) {
             if (w * w + h * h <= radius * radius) {
+                // SDL_RenderPoint respeta el color con alpha cuando el blend mode está activo
                 SDL_RenderPoint(rend, cx + w, cy + h);
             }
         }
@@ -118,33 +132,33 @@ void Game::Run() {
                 homingMissilesCount -= 1;
             }
 
-            if (spawnHoming) {
-                // Intentar apuntar al enemigo más cercano
-                float vx = 0.0f;
-                float vy = -300.0f;
-                float bx = bulletX + 2.5f;
-                float by = bulletY + 7.5f;
-                float bestDist = 1e9f;
-                // Buscar enemigo más cercano
-                for (const auto& en : enemyManager->enemies) {
-                    if (!en.alive) continue;
-                    float ex = en.rect.x + en.rect.w / 2;
-                    float ey = en.rect.y + en.rect.h / 2;
-                    float dx = ex - bx;
-                    float dy = ey - by;
-                    float dist = sqrtf(dx*dx + dy*dy);
-                    if (dist < bestDist) {
-                        bestDist = dist;
-                        // estimar tiempo para alcanzar verticalmente
-                        float t = fabsf(dy) / fabsf(vy);
-                        if (t < 0.001f) t = 0.5f;
-                        vx = dx / t;
+                if (spawnHoming) {
+                    // Intentar apuntar al enemigo más cercano y pasar target explícito.
+                    float bx = bulletX + 2.5f;
+                    float by = bulletY + 7.5f;
+                    float bestDist = 1e9f;
+                    float targetX = -1.0f;
+                    float targetY = -1.0f;
+                    for (const auto& en : enemyManager->enemies) {
+                        if (!en.alive) continue;
+                        float ex = en.rect.x + en.rect.w / 2;
+                        float ey = en.rect.y + en.rect.h / 2;
+                        float dx = ex - bx;
+                        float dy = ey - by;
+                        float dist = sqrtf(dx*dx + dy*dy);
+                        if (dist < bestDist) {
+                            bestDist = dist;
+                            targetX = ex;
+                            targetY = ey;
+                        }
                     }
+                    // Usar velocidad vertical más lenta para misiles homing (más maniobrables)
+                    float homingVy = -220.0f; // más lento que la bala normal -300
+                    // Inicial vx 0; la lógica de Bullet calculará steering hacia target
+                    bullets.emplace_back(bulletX, bulletY, homingVy, 0.0f, true, targetX, targetY);
+                } else {
+                    bullets.emplace_back(bulletX, bulletY, -300.0f, 0.0f, false); // Velocidad hacia arriba
                 }
-                bullets.emplace_back(bulletX, bulletY, vy, vx, true);
-            } else {
-                bullets.emplace_back(bulletX, bulletY, -300.0f, 0.0f, false); // Velocidad hacia arriba
-            }
              
              // Reproducir sonido de disparo
              audioManager->PlaySoundManager("player_shoot", 0.7f);
@@ -234,7 +248,17 @@ void Game::Run() {
             // Juego normal
             // Dibujar jugador como círculo
             SDL_Color green = {0,255,0,255};
-            DrawCircle(rend, (int)(player->rect.x + player->rect.w/2), (int)(player->rect.y + player->rect.h/2), (int)(player->rect.w/2), green);
+            int pcx = (int)(player->rect.x + player->rect.w/2);
+            int pcy = (int)(player->rect.y + player->rect.h/2);
+            DrawCircle(rend, pcx, pcy, (int)(player->rect.w/2), green);
+
+            // Dibujar escudo como círculo más grande y translúcido si activo
+            if (player->shieldActive) {
+                SDL_Color shieldColor = {0, 191, 255, static_cast<Uint8>(255 * player->shieldAlpha)}; // cyan translúcido
+                // radio mayor que el del jugador
+                int shieldRadius = (int)(player->rect.w * 1.2f);
+                DrawCircle(rend, pcx, pcy, shieldRadius, shieldColor);
+            }
             
             // Dibujar balas del jugador
             for (auto& bullet : bullets) {
@@ -397,6 +421,38 @@ void Game::NextLevel() {
      gameOver = false;
      player->rect.x = 350; // Centrar jugador
      player->rect.y = 550;
+    // Reset kill counter for the new level
+    killsSinceLevelStart = 0;
+}
+
+bool Game::OnEnemyKilled(float spawnX, float spawnY) {
+    killsSinceLevelStart++;
+    // Regla para nivel 1 (currentLevel == 0): tras 3 muertes forzar un drop aleatorio
+    if (currentLevel == 0 && killsSinceLevelStart >= 3) {
+        killsSinceLevelStart = 0;
+        // Elegir tipo aleatorio
+        int r = rand() % 5;
+        PowerUp::Type chosen = PowerUp::Type::RestoreDefense;
+        switch (r) {
+            case 0: chosen = PowerUp::Type::RestoreDefense; break;
+            case 1: chosen = PowerUp::Type::BulletTime; break;
+            case 2: chosen = PowerUp::Type::ExtraLife; break;
+            case 3: chosen = PowerUp::Type::HomingMissiles; break;
+            case 4: chosen = PowerUp::Type::Shield; break;
+        }
+        float px = spawnX;
+        float py = spawnY;
+        if (px < 0.0f || py < 0.0f) {
+            // fallback al centro superior
+            px = 380.0f; py = 100.0f;
+        }
+        // Spawn en la posición del enemigo si se proporciona
+        PowerUp pu(px, py, chosen);
+        SpawnPowerUp(pu);
+        std::cout << "[Game] Level1 rule: spawned forced powerup (" << (int)chosen << ") after 3 kills" << std::endl;
+        return true;
+    }
+    return false;
 }
 
 void Game::ShowLevelTransition() {
@@ -445,4 +501,13 @@ void Game::ActivateShield(int hp, float duration) {
         player->shieldAlpha = 0.15f;
     }
     std::cout << "[Game] Shield activated: hp=" << hp << " duration=" << duration << std::endl;
+}
+
+void Game::SetPowerupTestMode(bool enable) {
+    powerupTestMode = enable;
+    std::cout << "[Game] Powerup test mode " << (enable ? "ENABLED" : "DISABLED") << std::endl;
+}
+
+bool Game::IsPowerupTestMode() const {
+    return powerupTestMode;
 }

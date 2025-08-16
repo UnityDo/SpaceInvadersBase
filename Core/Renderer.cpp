@@ -10,6 +10,10 @@ Renderer::~Renderer() {
 bool Renderer::Init() {
     window = SDL_CreateWindow("Space Invaders", 800, 600, 0);
     renderer = SDL_CreateRenderer(window, nullptr);
+    if (renderer) {
+        // Habilitar blending por defecto para poder dibujar colores con alfa
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    }
     return window && renderer;
 }
 

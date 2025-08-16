@@ -76,18 +76,20 @@ void EnemyManager::Update(float dt) {
             }
         } else {
             // Intentar mover cada enemigo horizontalmente, evitando solapamientos
-            float delta = 35.0f * direction;
+            // Ahora usamos la velocidad por-enemigo (e.speed) como multiplicador para el desplazamiento
+            const float baseDelta = 35.0f; // desplazamiento base por tick
             auto wouldOverlap = [&](const SDL_FRect& a, const SDL_FRect& b) {
                 return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
             };
-            
+
             // Para mantener la formación, evaluamos cada enemigo individualmente
             for (size_t i = 0; i < enemies.size(); ++i) {
                 auto& e = enemies[i];
                 if (!e.alive) continue;
+                float delta = baseDelta * direction * e.speed; // usa speed del enemigo
                 SDL_FRect pred = e.rect;
                 pred.x += delta;
-                
+
                 bool collision = false;
                 // Comprobar colisión con otros enemigos vivos
                 for (size_t j = 0; j < enemies.size(); ++j) {
@@ -96,7 +98,7 @@ void EnemyManager::Update(float dt) {
                     if (!other.alive) continue;
                     if (wouldOverlap(pred, other.rect)) { collision = true; break; }
                 }
-                
+
                 // Si no colisiona con otro enemigo, aplicar movimiento
                 if (!collision) {
                     e.rect.x = pred.x;

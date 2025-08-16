@@ -46,6 +46,16 @@ public:
     // Historial de partidas
     void SaveGameHistoryEntry();
 
+    // Testing helpers
+    void SetPowerupTestMode(bool enable);
+    bool IsPowerupTestMode() const;
+    // Expose current level
+    int GetCurrentLevel() const;
+    // Called when an enemy is killed (for level-specific drop rules)
+    // Returns true if the call spawned a forced power-up (so callers can skip their own spawn logic)
+    // spawnX/spawnY optional: position of the killed enemy to spawn forced powerup there
+    bool OnEnemyKilled(float spawnX = -1.0f, float spawnY = -1.0f);
+
 private:
     bool running;
     Player* player;
@@ -84,4 +94,8 @@ private:
         // Tiempos de partida
         double startTime = 0.0;
         double elapsedTime = 0.0;
+    // Test mode: si true, todos los enemigos sueltan powerups para testing
+    bool powerupTestMode = false;
+    // Conteo de muertes desde el inicio del nivel (para reglas como Level 1 -> drop tras 3 kills)
+    int killsSinceLevelStart = 0;
 };

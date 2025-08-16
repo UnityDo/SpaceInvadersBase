@@ -2,25 +2,58 @@
 #include "EnemyManager.h"
 #include <cmath>
 
-Bullet::Bullet(float x, float y, float speed, float vx, bool isHoming) : speed(speed), vx(vx), isHoming(isHoming) {
+Bullet::Bullet(float x, float y, float speed, float vx, bool isHoming, float tX, float tY) : speed(speed), vx(vx), isHoming(isHoming), targetX(tX), targetY(tY) {
     rect = { x, y, 5, 15 };
-    if (isHoming) homingLife = 300; // duración en frames de homing, ~5s a 60fps
+    if (isHoming) {
+        homingLife = 300; // duración en frames de homing, ~5s a 60fps
+        if (targetX >= 0.0f && targetY >= 0.0f) hasTarget = true;
+        // homing más lento que un misil normal
+        // limitamos la velocidad vertical a un valor menor (velocidad es positiva hacia abajo o negativa hacia arriba)
+    }
 }
 
 void Bullet::Update(float dt) {
-    // Homing behavior: buscar enemigo más cercano verticalmente hacia arriba
+    // Homing behavior: ajustar vx para dirigirse al target sin invertir vy
     if (isHoming && homingLife > 0) {
-        // Intentaremos encontrar el enemigo más cercano en el mundo
-        // Para no depender de singletons, buscaremos en un EnemyManager global si existe (se asume que quien llama puede setear targetVX)
-        // Implementación simplificada: ajustar ligeramente vx hacia el centro de pantalla cuando es homing
-        float centerX = 400.0f;
-        float dx = centerX - (rect.x + rect.w/2);
-        float desiredVX = (dx) * 0.5f; // ganancia
-        // Lerp hacia desiredVX
-        vx += (desiredVX - vx) * 0.1f;
+        float bx = rect.x + rect.w / 2.0f;
+        float by = rect.y + rect.h / 2.0f;
+        float tx = targetX;
+        float ty = targetY;
+        // Si no tenemos target explícito, no hacemos nada agresivo
+        if (!hasTarget) {
+            // comportamiento por defecto antiguo: tirar ligeramente al centro
+            tx = 400.0f;
+            ty = 0.0f;
+        }
+
+        float dx = tx - bx;
+        float dy = ty - by;
+
+        // Calcular tiempo aproximado para alcanzar verticalmente, usando la velocidad vertical actual (speed)
+        float vy = speed; // note: speed puede ser negativo para disparos del jugador
+        float absVy = fabsf(vy);
+        if (absVy < 1.0f) absVy = 1.0f;
+        float t = fabsf(dy) / absVy;
+        if (t < 0.001f) t = 0.5f;
+
+        // Desired horizontal speed para alcanzar al target en tiempo t
+        float desiredVX = dx / t;
+
+        // Limitar para que no retroceda: no permitir desiredVX que haga que el misil invierta su dirección vertical
+        // En este contexto consideramos "no retroceder" como no invertir la componente vertical; ya que vy controla vertical,
+        // nos aseguramos de que el ajuste horizontal no haga cosas extrañas.
+
+        // Limitar velocidad horizontal a un máximo razonable
+        if (desiredVX > maxHomingHorizSpeed) desiredVX = maxHomingHorizSpeed;
+        if (desiredVX < -maxHomingHorizSpeed) desiredVX = -maxHomingHorizSpeed;
+
+        // Aplicar un lerp suave para que el giro sea lento
+        vx += (desiredVX - vx) * homingTurnLerp;
+
         homingLife--;
     }
 
+    // Mover usando speed (vertical) y vx (horizontal)
     rect.y += speed * dt;
     rect.x += vx * dt;
     if (rect.y < 0 || rect.y > 600 || rect.x < 0 || rect.x > 800) active = false;

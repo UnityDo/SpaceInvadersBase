@@ -47,7 +47,18 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
                 }
 
                 bullet.active = false;  // Destruir bala
-                enemy.alive = false;    // Destruir enemigo
+                // Aplicar daño al enemigo y sólo ejecutar la lógica de muerte si realmente muere
+                enemy.TakeDamage(1);
+
+                if (enemy.IsAlive()) {
+                    // Enemigo aún vivo tras el impacto
+                    bulletConsumed = true;
+                    break;
+                }
+
+                // Notificar al juego de la muerte (reglas de drop por nivel)
+                // NOTE: la lógica de spawn por regla se consultará más abajo y devolverá
+                // un booleano indicando si ya generó un power-up.
 
                 // Si el enemigo era splitter, spawnear dos básicos en posiciones libres cercanas
                 if (enemy.isSplitter || enemy.type == EnemyType::Splitter) {
@@ -102,12 +113,47 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
                     }
                 }
 
-                // Posibilidad de dropear powerup al morir (10%)
-                if (rand() % 100 < 10) {
-                    // Spawn powerup en la posición del enemigo
-                    PowerUp pu(enemy.rect.x + enemy.rect.w/2 - 9.0f, enemy.rect.y + enemy.rect.h/2, PowerUp::Type::RestoreDefense);
-                    game.SpawnPowerUp(pu);
-                    std::cout << "[CollisionManager] PowerUp spawned at " << pu.rect.x << "," << pu.rect.y << std::endl;
+                // Posibilidad de dropear powerup al morir (10%) o forzar en modo test
+                // Pero si Game::OnEnemyKilled() ya spawnó un powerup (regla de nivel 1), saltar esta lógica.
+                // Pasar la posición del enemigo para que el powerup forzado aparezca ahí
+                bool spawnedByRule = game.OnEnemyKilled(enemy.rect.x + enemy.rect.w/2, enemy.rect.y + enemy.rect.h/2);
+                if (spawnedByRule) {
+                    // Ya se ha generado un powerup por la regla de nivel, no generar más
+                } else {
+                    bool forced = game.IsPowerupTestMode();
+                    int baseChance = forced ? 100 : 8; // probabilidad base
+                    // Darle un pequeño bonus en Nivel 2 (índice 1) para equilibrar drops
+                    if (!forced && game.GetCurrentLevel() == 1) baseChance = 12;
+                    if (rand() % 100 < baseChance) {
+                        // Elegir tipo aleatorio de powerup
+                        static int testIndex = 0;
+                        PowerUp::Type chosen = PowerUp::Type::RestoreDefense;
+                        if (forced) {
+                            // En modo test, ciclar por tipos para poder probarlos todos
+                            int idx = testIndex++;
+                            switch (idx % 5) {
+                                case 0: chosen = PowerUp::Type::RestoreDefense; break;
+                                case 1: chosen = PowerUp::Type::BulletTime; break;
+                                case 2: chosen = PowerUp::Type::ExtraLife; break;
+                                case 3: chosen = PowerUp::Type::HomingMissiles; break;
+                                case 4: chosen = PowerUp::Type::Shield; break;
+                            }
+                        } else {
+                            int r = rand() % 5;
+                            switch (r) {
+                                case 0: chosen = PowerUp::Type::RestoreDefense; break;
+                                case 1: chosen = PowerUp::Type::BulletTime; break;
+                                case 2: chosen = PowerUp::Type::ExtraLife; break;
+                                case 3: chosen = PowerUp::Type::HomingMissiles; break;
+                                case 4: chosen = PowerUp::Type::Shield; break;
+                            }
+                        }
+
+                        // Spawn powerup en la posición del enemigo
+                        PowerUp pu(enemy.rect.x + enemy.rect.w/2 - 9.0f, enemy.rect.y + enemy.rect.h/2, chosen);
+                        game.SpawnPowerUp(pu);
+                        std::cout << "[CollisionManager] PowerUp spawned (" << (int)chosen << ") at " << pu.rect.x << "," << pu.rect.y << std::endl;
+                    }
                 }
 
                 // Sumar puntos
