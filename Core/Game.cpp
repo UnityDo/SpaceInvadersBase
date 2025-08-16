@@ -1,5 +1,7 @@
 #include "Game.h"
 #include <SDL3/SDL.h>
+#include "HumanController.h"
+#include "../tools/ai/AIController.h"
 
 #include <cmath>
 #include <iostream>
@@ -28,6 +30,14 @@ int Game::GetCurrentLevel() const { return currentLevel; }
 
 Game::Game() : running(false), player(nullptr), enemyManager(nullptr), renderer(nullptr), inputManager(nullptr), collisionManager(nullptr), particleSystem(nullptr), textRenderer(nullptr), audioManager(nullptr), score(0), lives(3), gameOver(false), gameWon(false), enemyShootTimer(0.0f) {}
 
+float Game::GetPlayerFireCooldown() const { return playerFireCooldown; }
+
+void Game::ActivateContinueFire(float seconds) {
+    // Reduce fire cooldown to a faster rate for "continue fire" powerup
+    continueFireTimer = std::max(continueFireTimer, seconds);
+    std::cout << "[Game] ContinueFire activated: " << continueFireTimer << "s" << std::endl;
+}
+
 Game::~Game() { Shutdown(); }
 
 bool Game::Init() {
@@ -43,8 +53,33 @@ bool Game::Init() {
     // Iniciar cronómetro de la partida
     startTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
     player = new Player();
+    // Decidir controlador: por defecto humano, pero si la línea de comandos pide autoplay
+    bool autoplay = false;
+    bool headless = false;
+    unsigned int seed = 0;
+    // Uso de variables globales de argc/argv (están disponibles en MSVC/GCC como __argc/__argv)
+    for (int i = 0; i < __argc; ++i) {
+        const char* a = __argv[i];
+        if (a == nullptr) continue;
+        std::string s(a);
+        if (s == "--autoplay") autoplay = true;
+        if (s == "--headless") headless = true;
+        if (s == std::string("--seed") && i+1 < __argc) {
+            seed = static_cast<unsigned int>(std::stoul(__argv[i+1]));
+        }
+    }
+    // Crear InputManager
     enemyManager = new EnemyManager();
     inputManager = new InputManager();
+    // Crear y asignar el controlador apropiado
+    if (autoplay) {
+        // IA de pruebas en tools/ai
+        tools::ai::AIController* ai = new tools::ai::AIController(seed);
+        player->SetController(ai);
+    } else {
+        HumanController* humanCtrl = new HumanController(inputManager);
+        player->SetController(humanCtrl);
+    }
 
     // Usar sistema de audio miniaudio
     audioManager = new AudioManagerMiniaudio();
@@ -115,22 +150,60 @@ void Game::Run() {
         float timeScale = (bulletTimeTimer > 0.0f) ? 0.35f : 1.0f;
         float scaledDt = realDt * timeScale;
 
-        if (inputManager->IsLeftPressed()) {
-            player->Move(-1.0f, realDt);
-        }
-        if (inputManager->IsRightPressed()) {
-            player->Move(1.0f, realDt);
-        }
-        if (inputManager->IsFirePressed()) {
-            // Crear nueva bala en la posición del jugador
-            float bulletX = player->rect.x + player->rect.w / 2 - 2.5f; // Centrar la bala
-            float bulletY = player->rect.y - 10; // Arriba del jugador
-            // Si tenemos misiles homing, crear bala homing y consumir contador
-            bool spawnHoming = false;
-            if (homingMissilesCount > 0) {
-                spawnHoming = true;
-                homingMissilesCount -= 1;
+        // Control: si el player tiene un controller (HumanController o AIController) usamos sus queries
+            // Construir una observación del mundo para controladores (IA)
+            IPlayerController* ctrl = player->GetController();
+            WorldObservation obs;
+            // Llenar posición del jugador
+        obs.playerX = player->rect.x + player->rect.w / 2.0f;
+        obs.playerY = player->rect.y + player->rect.h / 2.0f;
+            // Enemigos
+            for (const auto& e : enemyManager->enemies) {
+                if (!e.alive) continue;
+                EnemyInfo ei{ e.rect.x + e.rect.w/2.0f, e.rect.y + e.rect.h/2.0f, e.health, static_cast<int>(e.type) };
+                obs.enemies.push_back(ei);
             }
+            // Powerups
+            for (const auto& pu : powerUps) {
+                if (!pu.active) continue;
+                PowerUpInfo pi{ pu.rect.x + pu.rect.w/2.0f, pu.rect.y + pu.rect.h/2.0f, static_cast<int>(pu.type) };
+                obs.powerups.push_back(pi);
+            }
+
+            if (ctrl) {
+                ctrl->Observe(obs);
+                if (ctrl->WantsMoveLeft()) player->Move(-1.0f, realDt);
+                if (ctrl->WantsMoveRight()) player->Move(1.0f, realDt);
+            } else {
+                if (inputManager->IsLeftPressed()) player->Move(-1.0f, realDt);
+                if (inputManager->IsRightPressed()) player->Move(1.0f, realDt);
+            }
+        // Decrementar timers relacionados con disparo y powerup ContinueFire
+        // playerFireTimer evita disparos a velocidad infinita cuando se mantiene el botón
+        playerFireTimer -= realDt;
+        if (continueFireTimer > 0.0f) {
+            continueFireTimer -= realDt;
+            if (continueFireTimer < 0.0f) continueFireTimer = 0.0f;
+        }
+
+    // Disparo: usar controller si existe
+    bool firePressed = false;
+    if (ctrl) firePressed = ctrl->WantsFire();
+    else firePressed = inputManager->IsFirePressed();
+    if (firePressed) {
+            // Solo disparar si el temporizador permite
+            float effectiveCooldown = playerFireCooldown;
+            if (continueFireTimer > 0.0f) effectiveCooldown = continueFireCooldown;
+            if (playerFireTimer <= 0.0f) {
+                // Crear nueva bala en la posición del jugador
+                float bulletX = player->rect.x + player->rect.w / 2 - 2.5f; // Centrar la bala
+                float bulletY = player->rect.y - 10; // Arriba del jugador
+                // Si tenemos misiles homing, crear bala homing y consumir contador
+                bool spawnHoming = false;
+                if (homingMissilesCount > 0) {
+                    spawnHoming = true;
+                    homingMissilesCount -= 1;
+                }
 
                 if (spawnHoming) {
                     // Intentar apuntar al enemigo más cercano y pasar target explícito.
@@ -159,14 +232,17 @@ void Game::Run() {
                 } else {
                     bullets.emplace_back(bulletX, bulletY, -300.0f, 0.0f, false); // Velocidad hacia arriba
                 }
-             
-             // Reproducir sonido de disparo
-             audioManager->PlaySoundManager("player_shoot", 0.7f);
 
-             if (!levelTransition && !finalVictory) {
+                // Reproducir sonido de disparo
+                audioManager->PlaySoundManager("player_shoot", 0.7f);
+
+                // Resetear timer de disparo
+                playerFireTimer = effectiveCooldown;
+            }
+            if (!levelTransition && !finalVictory) {
                 player->Update(realDt);
-             }
-         }
+            }
+        }
 
         player->Update(realDt);
         
@@ -430,8 +506,8 @@ bool Game::OnEnemyKilled(float spawnX, float spawnY) {
     // Regla para nivel 1 (currentLevel == 0): tras 3 muertes forzar un drop aleatorio
     if (currentLevel == 0 && killsSinceLevelStart >= 3) {
         killsSinceLevelStart = 0;
-        // Elegir tipo aleatorio
-        int r = rand() % 5;
+        // Elegir tipo aleatorio (ahora 6 tipos incluyendo ContinueFire)
+        int r = rand() % 6;
         PowerUp::Type chosen = PowerUp::Type::RestoreDefense;
         switch (r) {
             case 0: chosen = PowerUp::Type::RestoreDefense; break;
@@ -439,6 +515,7 @@ bool Game::OnEnemyKilled(float spawnX, float spawnY) {
             case 2: chosen = PowerUp::Type::ExtraLife; break;
             case 3: chosen = PowerUp::Type::HomingMissiles; break;
             case 4: chosen = PowerUp::Type::Shield; break;
+            case 5: chosen = PowerUp::Type::ContinueFire; break;
         }
         float px = spawnX;
         float py = spawnY;

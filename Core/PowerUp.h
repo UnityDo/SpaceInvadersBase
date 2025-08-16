@@ -2,7 +2,7 @@
 #include <SDL3/SDL.h>
 
 struct PowerUp {
-    enum class Type { RestoreDefense, BulletTime, ExtraLife, HomingMissiles, Shield };
+    enum class Type { RestoreDefense, BulletTime, ExtraLife, HomingMissiles, Shield, ContinueFire };
     SDL_FRect rect;
     float vy = 120.0f; // velocidad de caída px/s
     Type type = Type::RestoreDefense;
@@ -37,6 +37,9 @@ struct PowerUp {
                 break;
             case Type::Shield:
                 SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // yellow
+                break;
+            case Type::ContinueFire:
+                SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255); // magenta
                 break;
         }
         SDL_RenderFillRect(renderer, &rect);

@@ -39,6 +39,7 @@ public:
 
     // API pública para efectos de powerups
     void ActivateBulletTime(float seconds);
+    void ActivateContinueFire(float seconds);
     void AddLives(int n);
     void AddHomingMissiles(int n);
     void ActivateShield(int hp, float duration);
@@ -51,6 +52,8 @@ public:
     bool IsPowerupTestMode() const;
     // Expose current level
     int GetCurrentLevel() const;
+    // Fire cooldown state (seconds between shots)
+    float GetPlayerFireCooldown() const;
     // Called when an enemy is killed (for level-specific drop rules)
     // Returns true if the call spawned a forced power-up (so callers can skip their own spawn logic)
     // spawnX/spawnY optional: position of the killed enemy to spawn forced powerup there
@@ -75,6 +78,12 @@ private:
     bool shieldActive = false;
     float shieldTimer = 0.0f;    // duración restante del escudo
     int shieldHp = 0;            // impacto que puede absorber
+    // Control de cadencia de disparo del jugador
+    float playerFireCooldown = 0.25f; // segundos entre disparos por defecto
+    float playerFireTimer = 0.0f; // temporizador para controlar disparo continuo
+    // ContinueFire powerup reduce el cooldown a continuación
+    float continueFireCooldown = 0.08f; // cooldown reducido durante powerup
+    float continueFireTimer = 0.0f; // tiempo restante de ContinueFire
      
      // Estado del juego
      int score;

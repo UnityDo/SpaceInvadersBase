@@ -292,5 +292,77 @@
     "lives": 0,
     "max_level": 7,
     "score": 800
+  },
+  {
+    "duration_seconds": 64.16294479370117,
+    "lives": 0,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.16898584365845,
+    "lives": -1,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.17389917373657,
+    "lives": -2,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.17848610877991,
+    "lives": -3,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.18185496330261,
+    "lives": -4,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.18487787246704,
+    "lives": -5,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.18804383277893,
+    "lives": -6,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.19065880775452,
+    "lives": -7,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.19324898719788,
+    "lives": -8,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 64.1952588558197,
+    "lives": -9,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 81.8816819190979,
+    "lives": 0,
+    "max_level": 2,
+    "score": 900
+  },
+  {
+    "duration_seconds": 59.22324299812317,
+    "lives": 0,
+    "max_level": 2,
+    "score": 740
   }
 ]

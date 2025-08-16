@@ -6,6 +6,9 @@ Player::Player() {
 }
 
 void Player::Update(float dt) {
+    // Si hay un controlador, dejar que lo actualice (p. ej. IA)
+    if (controller) controller->Update(dt);
+
     // Actualizar temporizador de escudo
     if (shieldActive) {
         shieldTimer -= dt;

@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "IPlayerController.h"
 
 class Player : public Entity {
 public:
@@ -14,6 +15,11 @@ public:
     float shieldTimer = 0.0f;
     void ShieldHit();
 
-    private:
+    // Inyectar controlador (puede ser HumanController o AIController)
+    void SetController(IPlayerController* c) { controller = c; }
+    IPlayerController* GetController() const { return controller; }
+
+private:
     float speed = 600.0f; // píxeles por segundo
+    IPlayerController* controller = nullptr; // no propietario
 };

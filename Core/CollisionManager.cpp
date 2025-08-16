@@ -131,21 +131,23 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
                         if (forced) {
                             // En modo test, ciclar por tipos para poder probarlos todos
                             int idx = testIndex++;
-                            switch (idx % 5) {
+                            switch (idx % 6) {
                                 case 0: chosen = PowerUp::Type::RestoreDefense; break;
                                 case 1: chosen = PowerUp::Type::BulletTime; break;
                                 case 2: chosen = PowerUp::Type::ExtraLife; break;
                                 case 3: chosen = PowerUp::Type::HomingMissiles; break;
                                 case 4: chosen = PowerUp::Type::Shield; break;
+                                case 5: chosen = PowerUp::Type::ContinueFire; break;
                             }
                         } else {
-                            int r = rand() % 5;
+                            int r = rand() % 6;
                             switch (r) {
                                 case 0: chosen = PowerUp::Type::RestoreDefense; break;
                                 case 1: chosen = PowerUp::Type::BulletTime; break;
                                 case 2: chosen = PowerUp::Type::ExtraLife; break;
                                 case 3: chosen = PowerUp::Type::HomingMissiles; break;
                                 case 4: chosen = PowerUp::Type::Shield; break;
+                                case 5: chosen = PowerUp::Type::ContinueFire; break;
                             }
                         }
 
@@ -258,11 +260,17 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
                     std::cout << "[CollisionManager] Extra life requested" << std::endl;
                      break;
                  }
-                 case PowerUp::Type::HomingMissiles: {
+                     case PowerUp::Type::HomingMissiles: {
                     game.AddHomingMissiles(3);
                     std::cout << "[CollisionManager] Homing missiles requested" << std::endl;
                      break;
                  }
+                      case PowerUp::Type::ContinueFire: {
+                          // Activar ContinueFire: reducir cadencia por 3s
+                          game.ActivateContinueFire(3.0f);
+                          std::cout << "[CollisionManager] ContinueFire requested (3s)" << std::endl;
+                          break;
+                      }
                  case PowerUp::Type::Shield: {
                     game.ActivateShield(3, 2.0f);
                     std::cout << "[CollisionManager] Shield requested: 3 hits, 2s" << std::endl;
