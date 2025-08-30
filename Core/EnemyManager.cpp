@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <cmath>
 
 EnemyManager::EnemyManager() {
     LoadLevel(0); // Cargar nivel 1 por defecto
@@ -24,9 +25,9 @@ void EnemyManager::LoadLevel(int levelIndex) {
     if (defenseBlocks.empty()) {
         const float screenWidth = 800.0f; // Coincide con Renderer::Init()
         const float margin = 40.0f; // margen lateral
-        const float blockW = 80.0f;
-        const float blockH = 20.0f;
-        const int columns = 6; // aumentar columnas para cubrir laterales
+    const float blockW = 80.0f;
+    const float blockH = 140.0f; // skyscraper height
+    const int columns = 6; // aumentar columnas para cubrir laterales
 
         float gap = 10.0f;
         if (columns > 1) {
@@ -34,12 +35,16 @@ void EnemyManager::LoadLevel(int levelIndex) {
             if (gap < 8.0f) gap = 8.0f; // separación mínima
         }
 
-        for (int row = 0; row < 2; ++row) {
-            for (int i = 0; i < columns; ++i) {
-                float x = margin + i * (blockW + gap);
-                float y = 400.0f + row * (blockH + 10.0f);
-                defenseBlocks.emplace_back(x, y, blockW, blockH);
-            }
+        // Create single-row skyscrapers (one row of tall buildings)
+        for (int i = 0; i < columns; ++i) {
+            float x = margin + i * (blockW + gap);
+            float y = 400.0f; // base y
+            // Attempt to use asset path names build_01..build_06.png (relative)
+            char buf[128];
+            sprintf(buf, "assets/sprites/build_%02d.png", (i+1));
+            defenseBlocks.emplace_back(x, y, blockW, blockH, std::string(buf));
+            // Ensure the mutable surface exists immediately (texture created later when renderer is available)
+            defenseBlocks.back().Initialize(nullptr);
         }
         std::cout << "[EnemyManager] Defense blocks created: " << defenseBlocks.size() << std::endl;
     } else {
@@ -222,7 +227,61 @@ void EnemyManager::FireRandomBullet(std::vector<Bullet>& enemyBullets) {
     }
 }
 
-void EnemyManager::Render(SDL_Renderer* renderer) {
-    for (auto& e : enemies) e.Render(renderer);
-    for (auto& b : defenseBlocks) b.Render(renderer);
+void EnemyManager::Render(SDL_Renderer* renderer, SDL_Texture* enemyTexture, SpriteSheet* sheet) {
+    // Render enemies using texture if provided
+    for (auto& e : enemies) {
+        if (!e.alive) continue;
+        if (sheet) {
+            // Use sprite sheet for enemies. Map type Basic -> index 9.
+            int idx = 9; // default for basic
+            // Optionally set different indices for other enemy types
+            if (e.type == EnemyType::Basic) idx = 9;
+            else if (e.type == EnemyType::Fast) idx = 8; // example
+            else if (e.type == EnemyType::Tank) idx = 7; // example
+
+            SDL_Rect src = sheet->GetSrcRect(idx);
+            const int scale = 5; // x5 -> 40x40
+            SDL_FRect dst = { e.rect.x, e.rect.y, (float)(sheet->TileW() * scale), (float)(sheet->TileH() * scale) };
+            // center within e.rect if sizes differ and snap to integer pixels
+            float cx = e.rect.x + (e.rect.w - dst.w) / 2.0f;
+            float cy = e.rect.y + (e.rect.h - dst.h) / 2.0f;
+            dst.x = (float)std::round(cx);
+            dst.y = (float)std::round(cy);
+            SDL_FRect srcF = {(float)src.x, (float)src.y, (float)src.w, (float)src.h};
+            SDL_RenderTexture(renderer, sheet->GetTexture(), &srcF, &dst);
+            if (e.isBoss) {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+                SDL_FRect outline = { e.rect.x - 2.0f, e.rect.y - 2.0f, e.rect.w + 4.0f, e.rect.h + 4.0f };
+                SDL_RenderRect(renderer, &outline);
+            }
+        } else if (enemyTexture) {
+            // Render texture to enemy.rect — use integer dst because SDL_RenderCopyF may not be
+            // available in all SDL3 builds. Falls back to integer rect rendering.
+            SDL_FRect dstF = e.rect;
+            SDL_RenderTexture(renderer, enemyTexture, nullptr, &dstF);
+            if (e.isBoss) {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+                SDL_FRect outline = { e.rect.x - 2.0f, e.rect.y - 2.0f, e.rect.w + 4.0f, e.rect.h + 4.0f };
+                SDL_RenderRect(renderer, &outline);
+            }
+        } else {
+            e.Render(renderer);
+        }
+    }
+
+    // Note: skyscrapers are rendered separately as background via RenderBackground
+}
+
+void EnemyManager::RenderBackground(SDL_Renderer* renderer) {
+    for (auto& b : defenseBlocks) {
+        if (b.alive && b.texture == nullptr) b.Initialize(renderer);
+        // draw even if dead? dead buildings shouldn't render
+        if (b.alive) b.Render(renderer);
+        // Debug: draw a small marker where the last impact occurred
+        if (b.lastImpactX >= 0.0f && b.lastImpactY >= 0.0f) {
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_FRect m = { b.lastImpactX - 3.0f, b.lastImpactY - 3.0f, 6.0f, 6.0f };
+            SDL_RenderFillRect(renderer, &m);
+        }
+    }
 }

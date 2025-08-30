@@ -1,7 +1,8 @@
 #include "Player.h"
 
 Player::Player() {
-    rect = { 400, 550, 50, 20 };
+    // Updated to match player sprite size (45x43)
+    rect = { 400, 550, 45, 43 };
     speed = 300.0f; // velocidad en píxeles por segundo
 }
 

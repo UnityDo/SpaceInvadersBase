@@ -12,7 +12,7 @@ class Game;
 class CollisionManager {
 public:
     CollisionManager(AudioManagerMiniaudio* audioManager);
-    void CheckCollisions(Player& player, EnemyManager& enemies, std::vector<Bullet>& playerBullets, std::vector<Bullet>& enemyBullets, ParticleSystem& particles, Game& game);
+    void CheckCollisions(Player& player, EnemyManager& enemies, std::vector<Bullet>& playerBullets, std::vector<Bullet>& enemyBullets, ParticleSystem& particles, Game& game, SDL_Renderer* renderer = nullptr);
     
 private:
     AudioManagerMiniaudio* audioManager;

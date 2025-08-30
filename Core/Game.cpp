@@ -10,6 +10,7 @@
 #include <chrono>
 #include <fstream>
 #include "../libs/nlohmann/json.hpp"
+#include <filesystem>
 using json = nlohmann::json;
 
 // Evitar conflicto con macro max de Windows
@@ -65,9 +66,13 @@ bool Game::Init() {
         if (s == "--autoplay") autoplay = true;
         if (s == "--headless") headless = true;
         if (s == std::string("--seed") && i+1 < __argc) {
-            seed = static_cast<unsigned int>(std::stoul(__argv[i+1]));
+        seed = static_cast<unsigned int>(std::stoul(__argv[i+1]));
         }
     }
+    // store seed for logging
+    runSeed = static_cast<int>(seed);
+    autoplayEnabled = autoplay;
+    headlessEnabled = headless;
     // Crear InputManager
     enemyManager = new EnemyManager();
     inputManager = new InputManager();
@@ -169,6 +174,12 @@ void Game::Run() {
                 PowerUpInfo pi{ pu.rect.x + pu.rect.w/2.0f, pu.rect.y + pu.rect.h/2.0f, static_cast<int>(pu.type) };
                 obs.powerups.push_back(pi);
             }
+            // Enemy bullets for evasion
+            for (const auto& bullet : enemyBullets) {
+                if (!bullet.active) continue;
+                BulletInfo bi{ bullet.rect.x + bullet.rect.w/2.0f, bullet.rect.y + bullet.rect.h/2.0f, bullet.vx, bullet.speed };
+                obs.enemyBullets.push_back(bi);
+            }
 
             if (ctrl) {
                 ctrl->Observe(obs);
@@ -177,6 +188,24 @@ void Game::Run() {
             } else {
                 if (inputManager->IsLeftPressed()) player->Move(-1.0f, realDt);
                 if (inputManager->IsRightPressed()) player->Move(1.0f, realDt);
+            }
+            // Track movement to compute idle time
+            double now = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
+            float px = player->rect.x;
+            if (lastPlayerX < 0.0f) {
+                lastPlayerX = px;
+                lastMoveTimestamp = now;
+            } else {
+                if (fabs(px - lastPlayerX) > 1.0f) {
+                    // Considered as movement
+                    lastPlayerX = px;
+                    lastMoveTimestamp = now;
+                } else {
+                    // if hasn't moved for >0.5s, count as idle
+                    if (now - lastMoveTimestamp > 0.5) {
+                        timeIdle += realDt;
+                    }
+                }
             }
         // Decrementar timers relacionados con disparo y powerup ContinueFire
         // playerFireTimer evita disparos a velocidad infinita cuando se mantiene el botón
@@ -238,6 +267,8 @@ void Game::Run() {
 
                 // Resetear timer de disparo
                 playerFireTimer = effectiveCooldown;
+                // Telemetría: contar disparos
+                shotsFired++;
             }
             if (!levelTransition && !finalVictory) {
                 player->Update(realDt);
@@ -282,7 +313,7 @@ void Game::Run() {
         particleSystem->Update(scaledDt);
          
          // Verificar colisiones
-         collisionManager->CheckCollisions(*player, *enemyManager, bullets, enemyBullets, *particleSystem, *this);
+         collisionManager->CheckCollisions(*player, *enemyManager, bullets, enemyBullets, *particleSystem, *this, rend);
             if (!levelTransition && !finalVictory) {
                 CheckForVictory();
             }
@@ -293,7 +324,9 @@ void Game::Run() {
             if (bulletTimeTimer < 0.0f) bulletTimeTimer = 0.0f;
         }
 
-         renderer->Clear();
+    renderer->Clear();
+    // Render background skyscrapers first so other entities (bullets, player, powerups) draw on top
+    enemyManager->RenderBackground(renderer->GetSDLRenderer());
         
         if (gameOver) {
             // Pantalla de Game Over
@@ -322,16 +355,52 @@ void Game::Run() {
             ShowLevelTransition();
         } else {
             // Juego normal
-            // Dibujar jugador como círculo
-            SDL_Color green = {0,255,0,255};
-            int pcx = (int)(player->rect.x + player->rect.w/2);
-            int pcy = (int)(player->rect.y + player->rect.h/2);
-            DrawCircle(rend, pcx, pcy, (int)(player->rect.w/2), green);
+            // Dibujar jugador: preferimos el sprite sheet si está disponible
+            SpriteSheet* pSheet = renderer->GetPlayerSheet();
+            const int scale = 5; // global scale x5 (8x8 -> 40x40)
+            if (pSheet && renderer->HasPlayerSheet()) {
+                // Decide player sprite index by movement direction: left=10, neutral=11, right=12
+                int idx = 11; // neutral
+                // Decide index from controller or input: left=10, neutral=11, right=12
+                IPlayerController* ctrl = player->GetController();
+                if (ctrl) {
+                    if (ctrl->WantsMoveLeft()) idx = 10;
+                    else if (ctrl->WantsMoveRight()) idx = 12;
+                } else {
+                    if (inputManager && inputManager->IsLeftPressed()) idx = 10;
+                    else if (inputManager && inputManager->IsRightPressed()) idx = 12;
+                }
+                // Draw with tile scaling
+                SDL_Rect src = pSheet->GetSrcRect(idx);
+                SDL_FRect dst = { player->rect.x, player->rect.y, (float)(pSheet->TileW() * scale), (float)(pSheet->TileH() * scale) };
+                // Center horizontally relative to player rect width and snap dst to integer pixels
+                float cx = player->rect.x + (player->rect.w - dst.w) / 2.0f;
+                float cy = player->rect.y + (player->rect.h - dst.h) / 2.0f;
+                dst.x = (float)std::roundf(cx);
+                dst.y = (float)std::roundf(cy);
+                // Use integer source rect converted to SDL_FRect to match SDL_RenderTexture signature
+                SDL_FRect srcF = {(float)src.x, (float)src.y, (float)src.w, (float)src.h};
+                SDL_RenderTexture(rend, pSheet->GetTexture(), &srcF, &dst);
+            } else {
+                // Fallback: existing behavior
+                SDL_Texture* pTex = renderer->GetPlayerTexture();
+                if (pTex) {
+                    SDL_FRect dstF = player->rect;
+                    SDL_RenderTexture(rend, pTex, nullptr, &dstF);
+                } else {
+                    // Fallback: dibujar como círculo si no hay textura
+                    SDL_Color green = {0,255,0,255};
+                    int pcx = (int)(player->rect.x + player->rect.w/2);
+                    int pcy = (int)(player->rect.y + player->rect.h/2);
+                    DrawCircle(rend, pcx, pcy, (int)(player->rect.w/2), green);
+                }
+            }
 
             // Dibujar escudo como círculo más grande y translúcido si activo
             if (player->shieldActive) {
                 SDL_Color shieldColor = {0, 191, 255, static_cast<Uint8>(255 * player->shieldAlpha)}; // cyan translúcido
-                // radio mayor que el del jugador
+                int pcx = (int)(player->rect.x + player->rect.w/2);
+                int pcy = (int)(player->rect.y + player->rect.h/2);
                 int shieldRadius = (int)(player->rect.w * 1.2f);
                 DrawCircle(rend, pcx, pcy, shieldRadius, shieldColor);
             }
@@ -348,7 +417,8 @@ void Game::Run() {
             }
             
             // Usar el método de EnemyManager para renderizar enemigos y defensas
-            enemyManager->Render(rend);
+            // Pass the player sprite sheet (shared ships sheet) to enemy renderer so basic enemies use index 9
+            enemyManager->Render(rend, renderer->GetEnemyTexture(), renderer->GetPlayerSheet());
 
             // Dibujar partículas
             particleSystem->Render(rend);
@@ -395,6 +465,8 @@ int Game::GetScore() const {
 
 void Game::LoseLife() {
     lives--;
+    // Telemetría: cuenta como hit tomado por enemigo
+    enemyHitsTaken++;
     if (lives <= 0) {
         gameOver = true;
         // Registrar en historial
@@ -432,6 +504,9 @@ void Game::CheckForVictory() {
             std::cout << "¡VICTORIA FINAL! Has superado todos los niveles. Score final: " << score << std::endl;
         } else {
             levelTransition = true;
+            // Registrar el fin de este nivel en el historial para tuning (escribe logs/run_<seed>.json)
+            elapsedTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count() - startTime;
+            SaveGameHistoryEntry();
             std::cout << "Nivel superado: " << (currentLevel+1) << ". Pulsa una tecla para continuar." << std::endl;
         }
         gameWon = false;
@@ -466,8 +541,51 @@ void Game::SaveGameHistoryEntry() {
         out.close();
 
         std::cout << "[Game] Game history entry saved." << std::endl;
+        // Also write a per-run JSON for external tuning scripts, ensure logs directory exists
+        try {
+            json runj;
+            runj["seed"] = runSeed;
+            runj["duration_seconds"] = elapsedTime;
+            runj["max_level"] = currentLevel + 1;
+            runj["lives"] = lives;
+            runj["score"] = score;
+            std::filesystem::path logsdir("logs");
+            std::error_code ec;
+            std::filesystem::create_directories(logsdir, ec);
+            if (!ec) {
+                // Add telemetry fields
+                runj["powerups_collected"] = powerupsCollected;
+                runj["enemy_hits_taken"] = enemyHitsTaken;
+                runj["shots_fired"] = shotsFired;
+                runj["time_idle"] = timeIdle;
+                // Powerup pickup latency (average)
+                runj["powerup_pickup_count"] = powerupPickupCount;
+                if (powerupPickupCount > 0) runj["powerup_pickup_latency_avg"] = powerupPickupLatencySum / (double)powerupPickupCount;
+                else runj["powerup_pickup_latency_avg"] = 0.0;
+
+                std::filesystem::path runpath = logsdir / (std::string("run_") + std::to_string(runSeed) + std::string(".json"));
+                std::ofstream r(runpath.string());
+                if (r.good()) { r << runj.dump(2); r.close(); }
+                // If running fully headless (automation), stop the main loop so the process exits cleanly
+                // Do NOT auto-exit for interactive autoplay so the game can continue running in a window.
+                if (headlessEnabled) {
+                    std::cout << "[Game] Headless mode: exiting after logging for seed " << runSeed << std::endl;
+                    running = false;
+                }
+            }
+        } catch (...) {
+            // ignore logging errors
+        }
     } catch (const std::exception& e) {
         std::cerr << "[Game] Failed to save game history: " << e.what() << std::endl;
+    }
+}
+
+void Game::RecordPowerupPickup(double latency) {
+    powerupsCollected += 1;
+    if (latency > 0.0) {
+        powerupPickupLatencySum += latency;
+        powerupPickupCount += 1;
     }
 }
 
@@ -543,7 +661,10 @@ void Game::ShowLevelTransition() {
 }
 
 void Game::SpawnPowerUp(const PowerUp& pu) {
-    powerUps.push_back(pu);
+    // copy and set absolute spawn time
+    PowerUp copy = pu;
+    copy.spawnAbsTime = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
+    powerUps.push_back(copy);
 }
 
 std::vector<PowerUp>& Game::GetPowerUps() {

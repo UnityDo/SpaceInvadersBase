@@ -47,6 +47,14 @@ public:
     // Historial de partidas
     void SaveGameHistoryEntry();
 
+    // Telemetry getters (read-only)
+    int GetPowerupsCollected() const { return powerupsCollected; }
+    int GetEnemyHitsTaken() const { return enemyHitsTaken; }
+    int GetShotsFired() const { return shotsFired; }
+    double GetTimeIdle() const { return timeIdle; }
+    // Telemetry recording helpers
+    void RecordPowerupPickup(double latency);
+
     // Testing helpers
     void SetPowerupTestMode(bool enable);
     bool IsPowerupTestMode() const;
@@ -103,6 +111,21 @@ private:
         // Tiempos de partida
         double startTime = 0.0;
         double elapsedTime = 0.0;
+        int runSeed = 0;
+    // Execution mode flags
+    bool autoplayEnabled = false;
+    bool headlessEnabled = false;
+    // Telemetry counters
+    int powerupsCollected = 0;
+    int enemyHitsTaken = 0; // times player was hit by enemy bullets or enemy escape
+    int shotsFired = 0;
+    double timeIdle = 0.0; // time spent not moving significantly (approx)
+    // Internal state to help compute idle time
+    float lastPlayerX = -1.0f;
+    double lastMoveTimestamp = 0.0;
+    // Powerup pickup latency accumulation
+    double powerupPickupLatencySum = 0.0; // sum of (pickupTime - spawnTime)
+    int powerupPickupCount = 0;
     // Test mode: si true, todos los enemigos sueltan powerups para testing
     bool powerupTestMode = false;
     // Conteo de muertes desde el inicio del nivel (para reglas como Level 1 -> drop tras 3 kills)

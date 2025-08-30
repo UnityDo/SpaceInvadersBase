@@ -27,10 +27,11 @@ echo #define BUILD_DATE "%DATE%" >> %BUILD_INFO%
 echo #define BUILD_AUTHOR "%AUTHOR%" >> %BUILD_INFO%
 
 REM === COMPILAR ===
-set SRC=Core\main.cpp Core\Game.cpp Core\Player.cpp Core\Enemy.cpp Core\EnemyManager.cpp Core\EnemyFactory.cpp Core\Bullet.cpp Core\Renderer.cpp Core\InputManager.cpp Core\CollisionManager.cpp Core\Raycast.cpp Core\ParticleSystem.cpp Core\TextRenderer.cpp Core\AudioManager.cpp Core\AudioManagerMiniaudio.cpp
+set SRC=Core\main.cpp Core\Game.cpp Core\Player.cpp Core\Enemy.cpp Core\EnemyManager.cpp Core\EnemyFactory.cpp Core\Bullet.cpp Core\Renderer.cpp Core\SpriteSheet.cpp Core\InputManager.cpp Core\CollisionManager.cpp Core\Raycast.cpp Core\ParticleSystem.cpp Core\TextRenderer.cpp Core\AudioManager.cpp Core\AudioManagerMiniaudio.cpp Core\Skyscraper.cpp tools\ai\AIController.cpp
 set OUT=SpaceInvaders.exe
-set INCLUDES=-ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann
-set LIBS=-Llibs\SDL3-3.2.18\x86_64-w64-mingw32\lib -Llibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\lib -lSDL3 -lSDL3_ttf
+rem Add SDL3_image includes/libs (provided in libs\SDL3_image-3.2.4)
+set INCLUDES=-ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann
+set LIBS=-Llibs\SDL3-3.2.18\x86_64-w64-mingw32\lib -Llibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\lib -Llibs\SDL3_image-3.2.4\x86_64-w64-mingw32\lib -lSDL3 -lSDL3_ttf -lSDL3_image
 
 REM Soporta parámetro /fast para compilación de desarrollo (-O0 -g)
 set BUILD_FLAGS=-O2
@@ -65,6 +66,11 @@ if %ERRORLEVEL%==0 (
         echo Build exitoso. Version: !NEW_VERSION! Fecha: %DATE%
 ) else (
         echo Error en la compilación. Revisa la salida anterior.
+)
+
+rem Copiar DLLs necesarias al directorio de salida
+if exist libs\SDL3_image-3.2.4\x86_64-w64-mingw32\bin\SDL3_image.dll (
+        copy /Y libs\SDL3_image-3.2.4\x86_64-w64-mingw32\bin\SDL3_image.dll .\
 )
 
 endlocal

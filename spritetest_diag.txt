@@ -1,0 +1,23 @@
+--- SpriteTest diagnostic ---
+cwd: c:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders
+PATH: C:\Program Files\Oculus\Support\oculus-runtime;C:\Python38\Scripts\;C:\Python38\;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\AutoFirma\AutoFirma;C:\Program Files\nodejs\;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\mingw64\bin;C:\Program Files (x86)\Incredibuild;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Users\Usuario\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Users\Usuario\AppData\Local\GitHubDesktop\bin;;C:\Users\Usuario\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Usuario\.dotnet\tools;C:\Users\Usuario\AppData\Roaming\npm;C:\Users\Usuario\AppData\Local\Programs\cursor\resources\app\bin;c:\Users\Usuario\.vscode\extensions\ms-python.debugpy-2025.10.0-win32-x64\bundled\scripts\noConfigScripts;c:\Users\Usuario\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand
+Loaded SDL3 module: c:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\SDL3.dll
+Loaded SDL3_image module: c:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\SDL3_image.dll
+SDL runtime: (not checked)
+SDL3.dll exists in cwd: yes
+SDL3.dll LoadLibrary: OK
+SDL3_image.dll exists in cwd: yes
+SDL3_image.dll LoadLibrary: OK
+SDL3_ttf.dll exists in cwd: yes
+SDL3_ttf.dll LoadLibrary: OK
+--- end diag ---
+
+--- DLL Verification ---
+SDL3.dll can be loaded explicitly
+SDL3_image.dll can be loaded explicitly
+--- Graphics System Check ---
+Desktop resolution: 1920x1080
+Color depth: 32 bits
+--- SDL Init Tests ---
+SDL_Init(0) failed: 
+SDL_Init(SDL_INIT_VIDEO) failed: 

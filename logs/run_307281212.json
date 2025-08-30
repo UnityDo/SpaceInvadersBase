@@ -1,0 +1,13 @@
+{
+  "duration_seconds": 44.02506923675537,
+  "enemy_hits_taken": 2,
+  "lives": 1,
+  "max_level": 1,
+  "powerup_pickup_count": 14,
+  "powerup_pickup_latency_avg": 2.492460540362767,
+  "powerups_collected": 14,
+  "score": 500,
+  "seed": 307281212,
+  "shots_fired": 170,
+  "time_idle": 16.336000775918365
+}

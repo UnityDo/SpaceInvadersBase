@@ -1,0 +1,59 @@
+[BUILD] Working dir: C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders
+[BUILD] Compiler: C:\mingw64\bin\g++.exe
+[BUILD] Started: 08/25/2025 18:50:51
+[BUILD] Compiling (1/17): Core\main.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\main.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\main.o
+[BUILD] Time: 2,44s | Avg: 2,44s | Est remaining: 39,06s
+[BUILD] Compiling (2/17): Core\Game.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\Game.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\Game.o
+[BUILD] Time: 6,51s | Avg: 4,47s | Est remaining: 67,10s
+[BUILD] Compiling (3/17): Core\Player.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\Player.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\Player.o
+[BUILD] Time: 0,39s | Avg: 3,11s | Est remaining: 43,57s
+[BUILD] Compiling (4/17): Core\Enemy.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\Enemy.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\Enemy.o
+[BUILD] Time: 0,41s | Avg: 2,44s | Est remaining: 31,68s
+[BUILD] Compiling (5/17): Core\EnemyManager.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\EnemyManager.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\EnemyManager.o
+[BUILD] Time: 0,96s | Avg: 2,14s | Est remaining: 25,71s
+[BUILD] Compiling (6/17): Core\EnemyFactory.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\EnemyFactory.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\EnemyFactory.o
+[BUILD] Time: 3,92s | Avg: 2,44s | Est remaining: 26,82s
+[BUILD] Compiling (7/17): Core\Bullet.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\Bullet.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\Bullet.o
+[BUILD] Time: 0,49s | Avg: 2,16s | Est remaining: 21,60s
+[BUILD] Compiling (8/17): Core\Renderer.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\Renderer.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\Renderer.o
+[BUILD] Time: 0,65s | Avg: 1,97s | Est remaining: 17,74s
+[BUILD] Compiling (9/17): Core\SpriteSheet.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\SpriteSheet.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\SpriteSheet.o
+[BUILD] Time: 0,71s | Avg: 1,83s | Est remaining: 14,65s
+[BUILD] Compiling (10/17): Core\InputManager.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\InputManager.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\InputManager.o
+[BUILD] Time: 0,60s | Avg: 1,71s | Est remaining: 11,96s
+[BUILD] Compiling (11/17): Core\CollisionManager.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\CollisionManager.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\CollisionManager.o
+[BUILD] Time: 2,69s | Avg: 1,80s | Est remaining: 10,79s
+[BUILD] Compiling (12/17): Core\Raycast.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\Raycast.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\Raycast.o
+[BUILD] Time: 0,57s | Avg: 1,70s | Est remaining: 8,48s
+[BUILD] Compiling (13/17): Core\ParticleSystem.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\ParticleSystem.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\ParticleSystem.o
+[BUILD] Time: 0,60s | Avg: 1,61s | Est remaining: 6,44s
+[BUILD] Compiling (14/17): Core\TextRenderer.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\TextRenderer.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\TextRenderer.o
+[BUILD] Time: 0,61s | Avg: 1,54s | Est remaining: 4,62s
+[BUILD] Compiling (15/17): Core\AudioManager.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\AudioManager.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\AudioManager.o
+[BUILD] Time: 0,81s | Avg: 1,49s | Est remaining: 2,98s
+[BUILD] Compiling (16/17): Core\AudioManagerMiniaudio.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c Core\AudioManagerMiniaudio.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\AudioManagerMiniaudio.o
+[BUILD] Time: 7,54s | Avg: 1,87s | Est remaining: 1,87s
+[BUILD] Compiling (17/17): tools\ai\AIController.cpp
+[BUILD] CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g -c tools\ai\AIController.cpp -ICore -Ifonts -Ilibs\SDL3-3.2.18\x86_64-w64-mingw32\include -Ilibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\include -Ilibs\SDL3_image-3.2.4\x86_64-w64-mingw32\include -ICore\libs -ICore\libs\nlohmann -o build\AIController.o
+[BUILD] Time: 1,45s | Avg: 1,84s | Est remaining: 0,00s
+[BUILD] Linking...
+[BUILD] LINK CMD: C:\mingw64\bin\g++.exe -std=c++17 -O0 -g C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\AIController.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\AudioManager.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\AudioManagerMiniaudio.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\Bullet.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\CollisionManager.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\Enemy.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\EnemyFactory.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\EnemyManager.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\Game.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\InputManager.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\main.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\ParticleSystem.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\Player.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\Raycast.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\Renderer.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\SpriteSheet.o C:\Users\Usuario\Documents\UnReal\Clases\Preguntas\CPlusplus_Games\SpaceInvaders\build\TextRenderer.o -Llibs\SDL3-3.2.18\x86_64-w64-mingw32\lib -Llibs\SDL3_ttf-devel-3.2.2-mingw\x86_64-w64-mingw32\lib -Llibs\SDL3_image-3.2.4\x86_64-w64-mingw32\lib -lSDL3 -lSDL3_ttf -lSDL3_image -o SpaceInvaders.exe
+[BUILD] Finished: 25/08/2025 18:51:24 | Total time: 32,95s
+Build exitoso. Version: 0.0.113 Fecha: 25/08/2025
+        1 archivo(s) copiado(s).

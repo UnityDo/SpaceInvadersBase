@@ -11,7 +11,11 @@ struct PowerUp {
     PowerUp(float x=0, float y=0, Type t=Type::RestoreDefense) : type(t) {
         rect = { x, y, 18.0f, 18.0f };
         active = true;
+        spawnAbsTime = 0.0; // will be set by Game::SpawnPowerUp when spawned
     }
+
+    // Absolute epoch seconds when spawned (for pickup time measurement)
+    double spawnAbsTime = 0.0;
 
     void Update(float dt) {
         if (!active) return;

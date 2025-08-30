@@ -1,7 +1,8 @@
 #include "CollisionManager.h"
 #include "Game.h"
-#include "DefenseBlock.h"
+#include "Skyscraper.h"
 #include <iostream>
+#include <chrono>
 
 CollisionManager::CollisionManager(AudioManagerMiniaudio* audio) : audioManager(audio) {
 }
@@ -14,7 +15,7 @@ bool RectCollision(const SDL_FRect& a, const SDL_FRect& b) {
             a.y + a.h > b.y);
 }
 
-void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, std::vector<Bullet>& playerBullets, std::vector<Bullet>& enemyBullets, ParticleSystem& particles, Game& game) {
+void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, std::vector<Bullet>& playerBullets, std::vector<Bullet>& enemyBullets, ParticleSystem& particles, Game& game, SDL_Renderer* renderer) {
     // Integrar bloques defensivos (si existen)
     auto& blocks = enemies.defenseBlocks;
 
@@ -174,19 +175,26 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
         if (!bullet.active) continue;
 
         bool bulletHandled = false;
-        // Primero verificar colisión con bloques defensivos
-        for (auto& block : blocks) {
-            if (!block.alive) continue;
-            if (RectCollision(bullet.rect, block.rect)) {
-                // Bala enemiga golpea bloque defensivo
-                block.TakeBulletHit();
-                bullet.active = false;
-                bulletHandled = true;
-                // Partículas pequeñas
-                particles.CreateExplosion(bullet.rect.x + bullet.rect.w/2, bullet.rect.y + bullet.rect.h/2, 6);
-                break;
+            // Primero verificar colisión con edificios (skyscrapers)
+            for (auto& block : blocks) {
+                if (!block.alive) continue;
+                if (RectCollision(bullet.rect, block.rect)) {
+                    // Check per-pixel opacity at bullet center so bullets pass through destroyed parts
+                    float cx = bullet.rect.x + bullet.rect.w/2.0f;
+                    float cy = bullet.rect.y + bullet.rect.h/2.0f;
+                    if (block.IsOpaqueAtWorld(cx, cy)) {
+                        int radius = 18; // radio de daño en px (ajustado a 18)
+                        std::cout << "[CollisionManager] Enemy bullet hit skyscraper at " << cx << "," << cy << "\n";
+                        block.TakeBulletHit(cx, cy, radius);
+                        bullet.active = false;
+                        bulletHandled = true;
+                            particles.CreateExplosion(cx, cy, 8);
+                        break;
+                    } else {
+                        // If the pixel is transparent, the bullet passes through
+                    }
+                }
             }
-        }
         if (bulletHandled) continue;
 
         // Verificar colisión entre bala enemiga y jugador
@@ -219,9 +227,19 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
         for (auto& block : blocks) {
             if (!block.alive) continue;
             if (RectCollision(enemy.rect, block.rect)) {
-                block.DestroyByEnemy();
-                enemy.alive = false; // enemigo se destruye al tocar el bloque
-                particles.CreateExplosion(enemy.rect.x + enemy.rect.w/2, enemy.rect.y + enemy.rect.h/2, 10);
+                // enemy collides with skyscraper: apply per-pixel explosion at contact point
+                float cx = enemy.rect.x + enemy.rect.w/2.0f;
+                float cy = enemy.rect.y + enemy.rect.h/2.0f;
+                int impactRadius = 18;
+                std::cout << "[CollisionManager] Enemy collided with skyscraper at " << cx << "," << cy << std::endl;
+                block.TakeBulletHit(cx, cy, impactRadius);
+                // Force immediate texture update if renderer available
+                if (renderer) {
+                    block.UpdateTexture(renderer);
+                }
+                // enemy is destroyed on impact
+                enemy.alive = false;
+                particles.CreateExplosion(cx, cy, 10);
                 if (audioManager) audioManager->PlaySoundManager("enemy_explosion", 0.8f);
             }
         }
@@ -233,20 +251,26 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
         if (!pu.active) continue;
         if (RectCollision(pu.rect, player.rect)) {
             pu.active = false;
+            // Telemetría: powerup recogido (usar API pública)
+            double latency = 0.0;
+            if (pu.spawnAbsTime > 0.0) {
+                double now = std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
+                latency = now - pu.spawnAbsTime;
+            }
+            game.RecordPowerupPickup(latency);
             switch (pu.type) {
                 case PowerUp::Type::RestoreDefense: {
-                    // Restaurar hasta 3 piezas de defensa
+                    // Restaurar hasta 3 edificios (reconstruir)
                     int restored = 0;
                     for (auto& block : blocks) {
                         if (restored >= 3) break;
                         if (!block.alive) {
+                            block.Restore(nullptr); // renderer unknown here; will lazy initialize on render
                             block.alive = true;
-                            block.hp = 3;
-                            block.rect = block.originalRect;
                             restored++;
                         }
                     }
-                    std::cout << "[CollisionManager] PowerUp collected: restored " << restored << " defense pieces" << std::endl;
+                    std::cout << "[CollisionManager] PowerUp collected: restored " << restored << " skyscrapers" << std::endl;
                     break;
                 }
                 case PowerUp::Type::BulletTime: {
