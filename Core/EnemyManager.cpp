@@ -277,11 +277,7 @@ void EnemyManager::RenderBackground(SDL_Renderer* renderer) {
         if (b.alive && b.texture == nullptr) b.Initialize(renderer);
         // draw even if dead? dead buildings shouldn't render
         if (b.alive) b.Render(renderer);
-        // Debug: draw a small marker where the last impact occurred
-        if (b.lastImpactX >= 0.0f && b.lastImpactY >= 0.0f) {
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-            SDL_FRect m = { b.lastImpactX - 3.0f, b.lastImpactY - 3.0f, 6.0f, 6.0f };
-            SDL_RenderFillRect(renderer, &m);
-        }
+    // Debug impact marker removed: leaving lastImpactX/lastImpactY for optional logging
+    // (If you need visual debug markers, re-enable here guarded by a runtime flag)
     }
 }

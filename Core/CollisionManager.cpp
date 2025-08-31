@@ -186,9 +186,13 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
                         int radius = 18; // radio de daño en px (ajustado a 18)
                         std::cout << "[CollisionManager] Enemy bullet hit skyscraper at " << cx << "," << cy << "\n";
                         block.TakeBulletHit(cx, cy, radius);
+                        // Force immediate texture update if renderer available so damage is visible this frame
+                        if (renderer) {
+                            block.UpdateTexture(renderer);
+                        }
                         bullet.active = false;
                         bulletHandled = true;
-                            particles.CreateExplosion(cx, cy, 8);
+                        particles.CreateExplosion(cx, cy, 8);
                         break;
                     } else {
                         // If the pixel is transparent, the bullet passes through

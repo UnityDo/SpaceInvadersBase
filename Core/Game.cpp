@@ -410,8 +410,9 @@ void Game::Run() {
                 bullet.Render(rend);
             }
             
-            // Dibujar balas enemigas (rojas)
+            // Dibujar balas enemigas (rojas) - saltar las inactivas para evitar residuos
             for (auto& bullet : enemyBullets) {
+                if (!bullet.active) continue;
                 SDL_SetRenderDrawColor(rend, 255, 0, 0, 255);
                 SDL_RenderFillRect(rend, &bullet.rect);
             }
