@@ -1,13 +1,13 @@
 {
-  "duration_seconds": 51.333873987197876,
+  "duration_seconds": 158.87150621414185,
   "enemy_hits_taken": 1,
-  "lives": 3,
-  "max_level": 1,
-  "powerup_pickup_count": 11,
-  "powerup_pickup_latency_avg": 2.7147573557767,
-  "powerups_collected": 11,
-  "score": 550,
+  "lives": 4,
+  "max_level": 5,
+  "powerup_pickup_count": 20,
+  "powerup_pickup_latency_avg": 2.417081093788147,
+  "powerups_collected": 20,
+  "score": 910,
   "seed": 0,
-  "shots_fired": 110,
-  "time_idle": 13.76000065356493
+  "shots_fired": 438,
+  "time_idle": 43.248002054169774
 }

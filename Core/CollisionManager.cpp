@@ -268,10 +268,11 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
                     int restored = 0;
                     for (auto& block : blocks) {
                         if (restored >= 3) break;
-                        if (!block.alive) {
-                            block.Restore(nullptr); // renderer unknown here; will lazy initialize on render
-                            block.alive = true;
-                            restored++;
+                        // Only restore buildings that still exist (alive == true)
+                        // and have history to roll back.
+                        if (block.alive) {
+                            block.RestoreFromHistory(2, renderer);
+                            if (block.alive) restored++;
                         }
                     }
                     std::cout << "[CollisionManager] PowerUp collected: restored " << restored << " skyscrapers" << std::endl;

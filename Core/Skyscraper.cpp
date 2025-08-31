@@ -172,6 +172,21 @@ void Skyscraper::TakeBulletHit(float wx, float wy, int radius) {
     
     std::cout << "[Skyscraper] Local surface coords: (" << cx << "," << cy << ") surface size: " << surfW << "x" << surfH << std::endl;
     
+    // Save snapshot of current surface to history (undo point) before applying damage
+    if ((int)history.size() >= 8) {
+        // limit history depth to 8: free oldest
+        SDL_DestroySurface(history.front());
+        history.erase(history.begin());
+    }
+    // Create a copy of the surface
+    SDL_Surface* snap = SDL_CreateSurface(surface->w, surface->h, SDL_PIXELFORMAT_RGBA32);
+    if (snap) {
+        // copy pixels
+        int bytes = surface->pitch * surface->h;
+        memcpy(snap->pixels, surface->pixels, bytes);
+        history.push_back(snap);
+    }
+
     ApplyExplosion(cx, cy, radius);
     // store last impact (world coords) for debug visualization
     lastImpactX = wx;
@@ -197,6 +212,61 @@ void Skyscraper::TakeBulletHit(float wx, float wy, int radius) {
     if (opaque < total/20) { // less than 5% opaque
         alive = false;
         std::cout << "[Skyscraper] Building destroyed!" << std::endl;
+    }
+}
+
+void Skyscraper::RestoreFromHistory(int levels, SDL_Renderer* rend) {
+    if (levels <= 0) return;
+    if (history.empty()) return;
+    // If building is dead, do not resurrect via history
+    if (!alive) return;
+
+    int take = std::min((int)history.size(), levels);
+    // pick the snapshot 'take' steps back from the end
+    SDL_Surface* target = history[history.size() - take];
+    if (!target) return;
+
+    // Replace current surface with a copy of target
+    SDL_Surface* newSurf = SDL_CreateSurface(target->w, target->h, SDL_PIXELFORMAT_RGBA32);
+    if (!newSurf) return;
+    int bytes = target->pitch * target->h;
+    memcpy(newSurf->pixels, target->pixels, bytes);
+
+    // swap surfaces
+    if (surface) SDL_DestroySurface(surface);
+    surface = newSurf;
+
+    // Update texture immediately if renderer provided
+    if (rend) {
+        if (texture) SDL_DestroyTexture(texture);
+        texture = SDL_CreateTextureFromSurface(rend, surface);
+        if (texture) {
+            SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
+            SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+        }
+    }
+
+    // Trim history: remove the last 'take' entries
+    for (int i = 0; i < take; ++i) {
+        SDL_DestroySurface(history.back());
+        history.pop_back();
+    }
+
+    // Recompute alive flag conservatively
+    Uint32* pixels = (Uint32*)surface->pixels;
+    int pitch = surface->pitch / 4;
+    int total = surfW * surfH;
+    int opaque = 0;
+    for (int i = 0; i < total; ++i) {
+        Uint32 p = pixels[i];
+        Uint8 r,g,b,a;
+        SDL_GetRGBA(p, SDL_GetPixelFormatDetails(surface->format), nullptr, &r, &g, &b, &a);
+        if (a > 16) opaque++;
+    }
+    if (opaque < total/20) {
+        alive = false;
+    } else {
+        alive = true;
     }
 }
 
@@ -241,4 +311,9 @@ void Skyscraper::Render(SDL_Renderer* rend) {
 void Skyscraper::Destroy() {
     if (texture) { SDL_DestroyTexture(texture); texture = nullptr; }
     if (surface) { SDL_DestroySurface(surface); surface = nullptr; }
+    // free history
+    for (SDL_Surface* s : history) {
+        if (s) SDL_DestroySurface(s);
+    }
+    history.clear();
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <string>
+#include <vector>
 
 // Skyscraper: representa un edificio destructible por impactos
 // Implementa una superficie mutable con máscara alpha donde se borran píxeles
@@ -22,6 +23,10 @@ struct Skyscraper {
     // Debug: last impact point in world coords (for visual debug), negative if none
     float lastImpactX = -1.0f;
     float lastImpactY = -1.0f;
+
+    // History of surface states (snapshots) to allow rollback when RestoreDefense powerup is used
+    // Each entry is a full SDL_Surface* copy of the surface BEFORE an impact was applied.
+    std::vector<SDL_Surface*> history;
 
     Skyscraper(float x=0, float y=0, float w=60, float h=140, const std::string& img="") {
         rect = { x, y, w, h };
@@ -45,6 +50,10 @@ struct Skyscraper {
 
     // Restore the building to full health (recreate surface from image or procedural)
     void Restore(SDL_Renderer* rend);
+
+    // Restore previous surface state from history by 'levels' steps (1 = undo last impact).
+    // Only works if the skyscraper is still alive; will not resurrect fully destroyed buildings.
+    void RestoreFromHistory(int levels, SDL_Renderer* rend);
 
     // Recreate texture from surface (call after modifying surface)
     void UpdateTexture(SDL_Renderer* rend);
