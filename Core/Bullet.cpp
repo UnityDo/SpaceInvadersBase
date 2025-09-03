@@ -2,8 +2,14 @@
 #include "EnemyManager.h"
 #include <cmath>
 
-Bullet::Bullet(float x, float y, float speed, float vx, bool isHoming, float tX, float tY) : speed(speed), vx(vx), isHoming(isHoming), targetX(tX), targetY(tY) {
-    rect = { x, y, 5, 15 };
+Bullet::Bullet(float x, float y, float speed, float vx, bool isHoming, float tX, float tY, Owner owner, bool small) : speed(speed), vx(vx), isHoming(isHoming), targetX(tX), targetY(tY), owner(owner), smallForContinueFire(small) {
+    // Default size for enemy bullets: 5x15, player bullets normally 5x15
+    // If smallForContinueFire is true, use a slimmer/shorter bullet (e.g., 3x12)
+    if (smallForContinueFire) {
+        rect = { x, y, 3, 12 };
+    } else {
+        rect = { x, y, 5, 15 };
+    }
     if (isHoming) {
         homingLife = 300; // duración en frames de homing, ~5s a 60fps
         if (targetX >= 0.0f && targetY >= 0.0f) hasTarget = true;
@@ -61,7 +67,17 @@ void Bullet::Update(float dt) {
 
 void Bullet::Render(SDL_Renderer* renderer) {
     if (active) {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        if (owner == Owner::Player) {
+            if (smallForContinueFire) {
+                // Color #66cc99 (102,204,153)
+                SDL_SetRenderDrawColor(renderer, 102, 204, 153, 255);
+            } else {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            }
+        } else {
+            // enemy bullets remain red
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        }
         SDL_RenderFillRect(renderer, &rect);
     }
 }

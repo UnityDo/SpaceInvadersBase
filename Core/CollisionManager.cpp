@@ -231,10 +231,24 @@ void CollisionManager::CheckCollisions(Player& player, EnemyManager& enemies, st
         for (auto& block : blocks) {
             if (!block.alive) continue;
             if (RectCollision(enemy.rect, block.rect)) {
-                // enemy collides with skyscraper: apply per-pixel explosion at contact point
-                float cx = enemy.rect.x + enemy.rect.w/2.0f;
-                float cy = enemy.rect.y + enemy.rect.h/2.0f;
-                int impactRadius = 18;
+                // enemy collides with skyscraper: compute contact point using intersection center
+                SDL_FRect inter;
+                inter.x = std::max(enemy.rect.x, block.rect.x);
+                inter.y = std::max(enemy.rect.y, block.rect.y);
+                inter.w = std::min(enemy.rect.x + enemy.rect.w, block.rect.x + block.rect.w) - inter.x;
+                inter.h = std::min(enemy.rect.y + enemy.rect.h, block.rect.y + block.rect.h) - inter.y;
+
+                float cx, cy;
+                if (inter.w > 0.0f && inter.h > 0.0f) {
+                    cx = inter.x + inter.w / 2.0f;
+                    cy = inter.y + inter.h / 2.0f;
+                } else {
+                    // fallback to enemy center if intersection degenerate
+                    cx = enemy.rect.x + enemy.rect.w / 2.0f;
+                    cy = enemy.rect.y + enemy.rect.h / 2.0f;
+                }
+
+                int impactRadius = 18; // use same radius as bullet impacts for consistency
                 std::cout << "[CollisionManager] Enemy collided with skyscraper at " << cx << "," << cy << std::endl;
                 block.TakeBulletHit(cx, cy, impactRadius);
                 // Force immediate texture update if renderer available

@@ -257,9 +257,15 @@ void Game::Run() {
                     // Usar velocidad vertical más lenta para misiles homing (más maniobrables)
                     float homingVy = -220.0f; // más lento que la bala normal -300
                     // Inicial vx 0; la lógica de Bullet calculará steering hacia target
-                    bullets.emplace_back(bulletX, bulletY, homingVy, 0.0f, true, targetX, targetY);
+                    bullets.emplace_back(bulletX, bulletY, homingVy, 0.0f, true, targetX, targetY, Bullet::Owner::Player, false);
                 } else {
-                    bullets.emplace_back(bulletX, bulletY, -300.0f, 0.0f, false); // Velocidad hacia arriba
+                    // If ContinueFire is active, spawn smaller green bullets for continuous feel and optionally an extra one
+                    bool smaller = (continueFireTimer > 0.0f);
+                    bullets.emplace_back(bulletX, bulletY, -300.0f, 0.0f, false, -1.0f, -1.0f, Bullet::Owner::Player, smaller); // Velocidad hacia arriba
+                    if (smaller) {
+                        // spawn a second slightly offset small bullet to increase density
+                        bullets.emplace_back(bulletX + 4.0f, bulletY, -300.0f, 0.0f, false, -1.0f, -1.0f, Bullet::Owner::Player, true);
+                    }
                 }
 
                 // Reproducir sonido de disparo
@@ -424,16 +430,62 @@ void Game::Run() {
             // Dibujar partículas
             particleSystem->Render(rend);
             
-            // Dibujar UI - Score y vidas
+            // Dibujar UI - Score (izquierda) y Lives+Level (derecha)
             if (textRenderer) {
+                SDL_Color white = {255,255,255,255};
+                // Score arriba-izquierda
                 std::string scoreText = "Score: " + std::to_string(score);
-                std::string livesText = "Lives: " + std::to_string(lives);
-                SDL_Color white = {255, 255, 255, 255};
-                textRenderer->RenderText(rend, scoreText, 20, 20, white);
-                textRenderer->RenderText(rend, livesText, 20, 50, white);
-                // Mostrar nivel actual
-                std::string levelText = "Level: " + std::to_string(currentLevel + 1) + "/25";
-                textRenderer->RenderText(rend, levelText, 20, 80, white);
+                textRenderer->RenderText(rend, scoreText, 16, 12, white);
+
+                // Preparar sprite sheet misc (lazy-load) para icono de vida
+                static SpriteSheet miscSheet;
+                static bool miscLoaded = false;
+                if (!miscLoaded) {
+                    std::string path = "assets/sprites/SpaceShooterAssetPack_Miscellaneous.png";
+                    miscLoaded = miscSheet.Load(rend, path, 8, 8);
+                }
+
+                // Lives: dibujar icono de vida (map index 2) en esquina superior derecha seguido de "xN"
+                const float padding = 12.0f;
+                const float iconSize = 24.0f; // 8x8 tile scaled to 24 px (3x)
+                const float screenW = 800.0f; // same assumption as rest of code
+
+                // Build lives text and estimate widths to center the block (icon + small gap + text)
+                std::string livesText = "x" + std::to_string(lives);
+                const float charW = 10.0f; // approximate char width in pixels for centering
+                float livesTextW = charW * (float)livesText.size();
+                const float gap = 6.0f; // gap between icon and text
+                float blockW = iconSize + gap + livesTextW;
+
+                float blockX = (screenW - blockW) / 2.0f;
+                float iconX = blockX;
+                float iconY = 12.0f;
+
+                if (miscLoaded && miscSheet.GetTexture()) {
+                    SDL_Rect src = miscSheet.GetSrcRect(2); // ExtraLife icon index as life icon
+                    SDL_FRect srcF = {(float)src.x, (float)src.y, (float)src.w, (float)src.h};
+                    SDL_FRect dstF = { iconX, iconY, iconSize, iconSize };
+                    SDL_RenderTexture(rend, miscSheet.GetTexture(), &srcF, &dstF);
+                } else {
+                    // fallback: draw a green heart-like square
+                    SDL_SetRenderDrawColor(rend, 0, 200, 0, 255);
+                    SDL_FRect heart = { iconX, iconY, iconSize, iconSize };
+                    SDL_RenderFillRect(rend, &heart);
+                }
+
+                // Draw lives text to the right of the icon
+                float textX = iconX + iconSize + gap;
+                float textY = iconY + (iconSize - 12.0f) / 2.0f; // center vertically (text assumed ~12px high)
+                textRenderer->RenderText(rend, livesText, (int)textX, (int)textY, white);
+
+                // Level: place in top-right corner (so it doesn't overlap centered lives block)
+                int displayMaxLevels = 125;
+                std::string levelText = "Level " + std::to_string(currentLevel + 1) + "/" + std::to_string(displayMaxLevels);
+                float levelTextW = charW * (float)levelText.size();
+                // use same horizontal margin as Score (approx 16 px) so level text isn't flush to the edge
+                float levelX = screenW - 32.0f - levelTextW;
+                float levelY = 12.0f;
+                textRenderer->RenderText(rend, levelText, (int)levelX, (int)levelY, white);
             }
 
             // Dibujar powerups

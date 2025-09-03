@@ -1390,5 +1390,83 @@
     "lives": 4,
     "max_level": 5,
     "score": 910
+  },
+  {
+    "duration_seconds": 49.41068696975708,
+    "lives": 2,
+    "max_level": 1,
+    "score": 420
+  },
+  {
+    "duration_seconds": 36.8867552280426,
+    "lives": 2,
+    "max_level": 1,
+    "score": 520
+  },
+  {
+    "duration_seconds": 39.414443016052246,
+    "lives": 5,
+    "max_level": 1,
+    "score": 500
+  },
+  {
+    "duration_seconds": 72.54707789421082,
+    "lives": 5,
+    "max_level": 2,
+    "score": 960
+  },
+  {
+    "duration_seconds": 81.0942599773407,
+    "lives": 4,
+    "max_level": 3,
+    "score": 1000
+  },
+  {
+    "duration_seconds": 34.162983894348145,
+    "lives": 5,
+    "max_level": 1,
+    "score": 550
+  },
+  {
+    "duration_seconds": 51.14259576797485,
+    "lives": 5,
+    "max_level": 1,
+    "score": 480
+  },
+  {
+    "duration_seconds": 37.925849199295044,
+    "lives": 4,
+    "max_level": 1,
+    "score": 550
+  },
+  {
+    "duration_seconds": 46.560264110565186,
+    "lives": 3,
+    "max_level": 1,
+    "score": 0
+  },
+  {
+    "duration_seconds": 70.2272081375122,
+    "lives": 3,
+    "max_level": 2,
+    "score": 270
+  },
+  {
+    "duration_seconds": 94.11657691001892,
+    "lives": 3,
+    "max_level": 3,
+    "score": 270
+  },
+  {
+    "duration_seconds": 35.23894500732422,
+    "lives": 6,
+    "max_level": 1,
+    "score": 500
+  },
+  {
+    "duration_seconds": 37.566011905670166,
+    "lives": 3,
+    "max_level": 1,
+    "score": 510
   }
 ]

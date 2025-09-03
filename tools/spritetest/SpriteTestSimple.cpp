@@ -37,7 +37,7 @@ int main() {
     // Cargar sprite sheet
     SpriteSheet sheet;
     //std::string sheetPath = "assets/sprites/SpaceShooterAssetPack_Ships.png";
-    std::string sheetPath = "assets/sprites/SpaceShooterAssetPack_Projectiles.png";
+    std::string sheetPath = "assets/sprites/SpaceShooterAssetPack_Miscellaneous.png";
    
     if (!sheet.Load(renderer->GetSDLRenderer(), sheetPath, 8, 8)) {
         std::cout << "Failed to load sprite sheet, continuing with test rectangle...\n";
